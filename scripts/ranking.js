@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     verJuegoBtn.addEventListener('click', function() {
         // Redireccionar a la otra vista
-        window.location.href = 'ver_juegos.html'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
+        window.location.href = '/ver_juegos'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
     nuevoJuegoBtn.addEventListener('click', function() {
         // Redireccionar a la otra vista
-        window.location.href = 'nuevo_juego.html'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
+        window.location.href = '/nuevo_juego'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
     function mostrarJugadores(jugadores) {
         const contenedorJugadores = document.getElementById('jugadores');
