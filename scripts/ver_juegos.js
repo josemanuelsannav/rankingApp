@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ${juego.jugadores.map((jugador, index) => `
                     <div class="jugador">
                         <span>${index + 1}. ${jugador.nombre}</span>
-                        <span>Puntuación: ${jugador.puntuacion}</span>
+                        
                     </div>
                 `).join('')}
             </div>
