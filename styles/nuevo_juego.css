@@ -1,0 +1,58 @@
+/* Estilos para el formulario y los botones */
+.form-container {
+    margin-bottom: 20px;
+}
+
+#game-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#game-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#game-form button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#game-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para la lista de jugadores */
+.container {
+    margin-bottom: 20px;
+}
+
+.container h2 {
+    margin-bottom: 10px;
+}
+
+.jugador {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.jugador:hover {
+    background-color: #f0f0f0;
+}
+
+.sortable-list {
+    display: flex;
+    flex-direction: column;
+}

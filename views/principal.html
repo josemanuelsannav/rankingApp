@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Jugadores</title>
+    <link rel="stylesheet" href="../styles/principal.css">
+</head>
+<body>
+    <h1>Formulario</h1>
+    <div class="form-container">
+        <form id="player-form">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="foto">URL de la foto:</label>
+            <input type="text" id="foto" name="foto" required>
+            <button type="submit">+</button>
+        </form>
+
+        <button id="go-to-view2" type="button" class="btn btn-primary">EMPEZAR</button>
+    </div>
+    <div class="container">
+        <div id="jugadores"></div>
+    </div>
+    <script src="../scripts/principal.js"></script>
+</body>
+</html>
