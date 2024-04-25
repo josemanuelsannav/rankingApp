@@ -104,6 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
         guardarJugadoresEnLocalStorage();
         guardarJuegoEnLocalStorage();
         alert('Puntuaciones actualizadas y juego guardado con éxito.');
-        window.location.href = 'ranking.html';
+        window.location.href = '/ranking';
     });
 });
