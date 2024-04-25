@@ -1,58 +1,50 @@
-/* Estilos para el formulario y los botones */
-.form-container {
-    margin-bottom: 20px;
-}
-
-#game-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-#game-form input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#game-form button[type="submit"] {
-    background-color: #007bff;
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #f5f6f7;
+  }
+  
+  .header {
+    text-align: center;
+    text-transform: uppercase;
+    padding: 32px;
+    background-color: #0a0a23;
     color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#game-form button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-/* Estilos para la lista de jugadores */
-.container {
-    margin-bottom: 20px;
-}
-
-.container h2 {
-    margin-bottom: 10px;
-}
-
-.jugador {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 5px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.jugador:hover {
-    background-color: #f0f0f0;
-}
-
-.sortable-list {
+    border-bottom: 4px solid #fdb347;
+  }
+  
+  .container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 10px;
+  }
+  
+  .juego {
+    display: inline-block; 
+    height: auto;
+    max-width: 350px;
+    
+    object-fit: cover;
+    border-radius: 10px;
+    border-color:  #fdb347;
+    border-width: 4px; /* Cambia el valor según el grosor deseado */
+    border-style: solid; /* Establece el estilo del borde */
+    padding: 5px 20px 20px 20px; 
+    margin: 10px;
 }
+
+  
+  .container::after {
+    content: "";
+    width: 350px;
+  }
