@@ -181,7 +181,7 @@ function guardarJuego() {
 
     añadirPuntos(juego);
     alert('El juego ha sido guardado en localStorage.');
-    window.location.href = 'ranking.html';
+    window.location.href = '/ranking';
 }
 );
 
