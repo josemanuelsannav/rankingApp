@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     goToView2Button.addEventListener('click', function() {
         // Redireccionar a otra vista
-        window.location.href = 'ranking.html'; // Cambia 'otra_vista.html' por la URL de la otra vista
+        window.location.href = '/ranking'; // Cambia 'otra_vista.html' por la URL de la otra vista
     });
 
 upload_dataButton.addEventListener("click",function () {
