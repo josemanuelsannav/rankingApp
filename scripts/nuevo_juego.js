@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const jugadoresContainer = document.getElementById('jugadores');
     let jugadores = JSON.parse(localStorage.getItem('jugadores')) || []; // Array para almacenar la lista de jugadores
     const gameForm = document.getElementById('game-form');
+    const addEquipoBtn = document.getElementById("addEquipo");
+    const saveEquipoBtn= document.getElementById("save-juego-equipo");
+
+
     // Función para mostrar los jugadores en la lista
     function mostrarJugadores() {
         jugadoresContainer.innerHTML = '';
@@ -96,8 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     
-
-
     gameForm.addEventListener('submit', function(event) {
         event.preventDefault();
         actualizarPuntuacion();
@@ -106,4 +108,93 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Puntuaciones actualizadas y juego guardado con éxito.');
         window.location.href = '/ranking';
     });
+
+    
+addEquipoBtn.addEventListener("click",// Función para agregar un equipo al formulario
+function agregarEquipo() {
+    const equiposContainer = document.getElementById('equipos-container');
+
+    // Crear un nuevo div para el equipo
+    const equipoDiv = document.createElement('div');
+    equipoDiv.classList.add('equipo');
+
+    // Crear input para el nombre del equipo
+    const equipoInput = document.createElement('input');
+    equipoInput.type = 'text';
+    equipoInput.placeholder = 'Nombre del Equipo';
+    equipoInput.classList.add('equipo-nombre');
+
+    // Crear input para los nombres de los integrantes
+    const integrantesInput = document.createElement('input');
+    integrantesInput.type = 'text';
+    integrantesInput.placeholder = 'Integrantes del Equipo (Separados por comas)';
+    integrantesInput.classList.add('integrantes');
+
+    // Crear input para los nombres de los puestos
+    const puestoInput = document.createElement('input');
+    puestoInput.type = 'number';
+    puestoInput.placeholder = 'Puesto del Equipo ';
+    puestoInput.classList.add('posicion');
+
+    // Agregar los inputs al div del equipo
+    equipoDiv.appendChild(equipoInput);
+    equipoDiv.appendChild(integrantesInput);
+    equipoDiv.appendChild(puestoInput);
+    // Agregar el div del equipo al contenedor de equipos
+    equiposContainer.appendChild(equipoDiv);
+}
+);
+
+saveEquipoBtn.addEventListener("click",// Función para guardar los datos del juego en localStorage
+function guardarJuego() {
+    // Obtener el nombre del juego
+    const nombreJuego = document.getElementById('nombre-juego-equipo').value;
+
+    // Verificar si se ingresó un nombre de juego
+    if (nombreJuego.trim() === '') {
+        alert('Por favor, ingresa el nombre del juego.');
+        return;
+    }
+
+    // Obtener los equipos
+    const equipos = [];
+    const equiposDivs = document.querySelectorAll('.equipo');
+    equiposDivs.forEach(div => {
+        const equipoNombre = div.querySelector('.equipo-nombre').value;
+        const integrantes = div.querySelector('.integrantes').value.split(',');
+        const puesto = div.querySelector('.posicion').value;
+        equipos.push({ nombre: equipoNombre, integrantes: integrantes ,posicion:puesto});
+    });
+
+    // Crear objeto con los datos del juego
+    const juego = {
+        nombre: nombreJuego,
+        equipos: equipos
+    };
+
+    
+    let juegos = JSON.parse(localStorage.getItem('juegos')) || []; 
+    
+    juegos.push(juego);
+   
+    localStorage.setItem('juegos', JSON.stringify(juegos));
+
+    añadirPuntos(juego);
+    alert('El juego ha sido guardado en localStorage.');
+    window.location.href = 'ranking.html';
+}
+);
+
+function añadirPuntos(juego){
+    //jugadores
+    for (const equipo of juego.equipos) {
+        for(const integrante of equipo.integrantes){
+            const jugador = jugadores.find(jugador => jugador.nombre === integrante);
+            if (jugador) {
+                jugador.puntuacion= jugador.puntuacion + (juego.equipos.length - equipo.posicion);
+            }
+        }
+    }
+    localStorage.setItem('jugadores', JSON.stringify(jugadores));
+};
 });

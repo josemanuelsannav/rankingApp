@@ -1,15 +1,43 @@
 document.addEventListener('DOMContentLoaded', function() {
     const nuevoJuegoBtn = document.getElementById('nuevo-juego-btn');
     const verJuegoBtn = document.getElementById('ver-juegos-btn');
+    const downloadDataBtn = document.getElementById("download");
 
     verJuegoBtn.addEventListener('click', function() {
         // Redireccionar a la otra vista
         window.location.href = '/ver_juegos'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
+
     nuevoJuegoBtn.addEventListener('click', function() {
         // Redireccionar a la otra vista
-        window.location.href = '/nuevo_juego'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
+        window.location.href = 'nuevo_juego.html'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
+
+    downloadDataBtn.addEventListener("click",function () {
+        try {
+            // Obtener los datos almacenados en el localStorage
+            const jugadores = JSON.parse(localStorage.getItem('jugadores'));
+            const juegos = JSON.parse(localStorage.getItem('juegos'));
+    
+            // Combinar los datos en un objeto JSON
+            const datosJSON = { jugadores, juegos };
+    
+            // Convertir el objeto JSON a una cadena JSON
+            const jsonString = JSON.stringify(datosJSON, null, 2);
+    
+            // Crear un Blob con la cadena JSON
+            const blob = new Blob([jsonString], { type: 'application/json' });
+    
+            // Crear un enlace de descarga para el archivo JSON
+            const a = document.createElement('a');
+            a.href = window.URL.createObjectURL(blob);
+            a.download = 'datos_del_localstorage.json';
+            a.click();
+        } catch (error) {
+            console.error('Error al descargar datos del localStorage:', error);
+        }
+    });
+
     function mostrarJugadores(jugadores) {
         const contenedorJugadores = document.getElementById('jugadores');
     
@@ -57,5 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
     mostrarJugadores(jugadoresGuardados);
+
+    
 
 });

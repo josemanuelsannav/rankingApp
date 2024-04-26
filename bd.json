@@ -1,0 +1,27 @@
+{
+    "jugadores":[
+        {
+            "nombre":"andres",
+            "foto":"kkkk",
+            "puntuacion": 1
+        },
+        {
+            "nombre":"julio",
+            "foto":"kkkk",
+            "puntuacion": 4
+        },
+        {
+            "nombre":"raul",
+            "foto":"kkkk",
+            "puntuacion": 6
+        }
+    ],
+    "juegos":[
+        {
+            "nombre":"furbol",
+            "participantes":[
+                "andres","raul","julio"
+            ]
+        }
+    ]
+}

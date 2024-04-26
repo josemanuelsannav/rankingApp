@@ -7,19 +7,32 @@
     <link rel="stylesheet" href="../styles/nuevo_juego.css">
 </head>
 <body>
-    <h1>Nuevo Juego</h1>
-    <div class="form-container">
-        <form id="game-form">
-            <label for="nombre-juego">Nombre del Juego:</label>
-            <input type="text" id="nombre-juego" name="nombre-juego" required>
-            <button type="submit">Guardar Juego</button>
-        </form>
+    <div>
+        <h1>Nuevo Juego</h1>
+        <div class="form-container">
+            <form id="game-form">
+                <label for="nombre-juego">Nombre del Juego:</label>
+                <input type="text" id="nombre-juego" name="nombre-juego" required>
+                <button type="submit">Guardar Juego</button>
+            </form>
+        </div>
+        <div class="container">
+            <h2>Jugadores</h2>
+            <div id="jugadores" class="sortable-list"></div>
+        </div>
     </div>
-    <div class="container">
-        <h2>Jugadores</h2>
-        <div id="jugadores" class="sortable-list"></div>
+    <div>
+        <h1>Por equipos</h1>
+        <div>
+            <label for="nombre-juego-equipo">Nombre del Juego:</label>
+            <input type="text" id="nombre-juego-equipo" name="nombre-juego" required>
+        </div>
+        <div id="equipos-container">
+            <!-- Contenedor para equipos -->
+        </div>
+        <button id="addEquipo">Añadir Equipo</button>
+        <button id="save-juego-equipo">Guardar</button>
     </div>
-
     <script src="../scripts/sortable.js"></script>
     <script src="../scripts/nuevo_juego.js"></script>
 </body>
