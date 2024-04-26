@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     nuevoJuegoBtn.addEventListener('click', function() {
         // Redireccionar a la otra vista
-        window.location.href = 'nuevo_juego.html'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
+        window.location.href = '/nuevo_juego'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
 
     downloadDataBtn.addEventListener("click",function () {
