@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const contenido = document.createElement('div');
             contenido.classList.add('contenido');
 
-            const nombre = document.createElement('h2');
+            const nombre = document.createElement('h3');
             nombre.textContent = jugador.nombre;
             contenido.appendChild(nombre);
 
