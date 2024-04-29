@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span>${index + 1}. ${jugador.nombre}</span>
                 <button class="subir-btn" data-index="${index}">Subir</button>
                 <button class="bajar-btn" data-index="${index}">Bajar</button>
+                <input class="no-juega" type="checkbox" data-nombre="${jugador.nombre}">No juega
             `;
             jugadoresContainer.appendChild(jugadorElement);
         });
@@ -55,25 +56,47 @@ document.addEventListener('DOMContentLoaded', function() {
    
     mostrarJugadores();
 
+    function contarCheckboxMarcados() {
+        // Seleccionar todos los elementos checkbox con la clase "no-juega"
+        const checkboxes = document.querySelectorAll('.no-juega');
+    
+        let contador = 0;
+    
+        // Recorrer todos los checkboxes y contar los marcados
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                contador++;
+            }
+        });
+    
+        return contador;
+    }
+    
     function actualizarPuntuacion() {
         // Obtener los jugadores del almacenamiento local
         const jugadoresAlmacenados = JSON.parse(localStorage.getItem('jugadores')) || [];
         const cantidadJugadores = jugadoresAlmacenados.length;
-        
+        const numeroCheckboxMarcados = contarCheckboxMarcados();
+        console.log(numeroCheckboxMarcados);
         // Recorrer los jugadores y actualizar su puntuación
         jugadores.forEach(function(jugador, index) {
             // Buscar al jugador en el almacenamiento local por su nombre
-            const jugadorAlmacenado = jugadoresAlmacenados.find(j => j.nombre === jugador.nombre);
-            if (jugadorAlmacenado) {
-                // Si se encuentra al jugador, sumar su puntuación anterior con la nueva puntuación calculada
-                jugador.puntuacion = jugadorAlmacenado.puntuacion + cantidadJugadores - index - 1;
-            } else {
-                // Si el jugador no se encuentra en el almacenamiento local, asignar la nueva puntuación directamente
-                jugador.puntuacion = cantidadJugadores - index - 1;
+            const checkbox = document.querySelector(`input[data-nombre="${jugador.nombre}"]`);
+            if (checkbox && !checkbox.checked) {
+                const jugadorAlmacenado = jugadoresAlmacenados.find(j => j.nombre === jugador.nombre);
+                if (jugadorAlmacenado) {
+                    // Si se encuentra al jugador, sumar su puntuación anterior con la nueva puntuación calculada
+                    jugador.puntuacion = jugadorAlmacenado.puntuacion + (cantidadJugadores - numeroCheckboxMarcados) - index - 1;
+                } else {
+                    // Si el jugador no se encuentra en el almacenamiento local, asignar la nueva puntuación directamente
+                    jugador.puntuacion = (cantidadJugadores - numeroCheckboxMarcados) - index - 1;
+                }
             }
         });
     }
+
     function guardarJugadoresEnLocalStorage() {
+
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
     }
 

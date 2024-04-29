@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             card.appendChild(contenido);
 
+          
             // Agregar la tarjeta al contenedor de jugadores
             contenedorJugadores.appendChild(card);
         });
