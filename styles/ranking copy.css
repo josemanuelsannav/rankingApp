@@ -43,19 +43,25 @@
 }
 
 .titulo-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px; /* Espacio entre el título y los botones */
-}
-
-.titulo-container h1 {
-    margin: 0; /* Eliminar el margen predeterminado del h1 */
-    padding-left: 450px;
+    width: 100%; /* Ajusta el ancho según tus necesidades */
+    text-align: center; /* Centra el contenido horizontalmente */
+  
+    
 }
 
 .botones-container button {
     margin-left: 10px; /* Espacio entre los botones */
+}
+.header {
+    text-align: center;
+    text-transform: uppercase;
+    padding: 32px;
+    background-color: #0a0a23;
+    color: #fff;
+    border-bottom: 4px solid #fdb347;
+  }
+.header h1{
+    font-size: 4em;
 }
 .jss1038 {
     display: flex;
@@ -306,3 +312,4 @@ h6 {
     display: flex;
     line-height: 1;
 }
+
