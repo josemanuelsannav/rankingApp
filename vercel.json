@@ -1,7 +1,7 @@
 {
   "routes": [
     { "src": "/", "dest": "/views/principal.html" },
-    { "src": "/ranking", "dest": "/views/ranking.html" },
+    { "src": "/ranking", "dest": "/views/ranking2.html" },
     { "src": "/ver_juegos", "dest": "/views/ver_juegos.html" },
     { "src": "/nuevo_juego", "dest": "/views/nuevo_juego.html" }
   ]
