@@ -1,4 +1,6 @@
-
+body{
+    margin:0 px;
+}
 .container {
     display: flex;
     padding-top: 40px;
