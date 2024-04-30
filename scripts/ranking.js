@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Recorrer todos los jugadores y crear una tarjeta para cada uno
      
         jugadores.forEach(function(jugador,index) {
-           
+           if(index!=0 && index!=1 && index!=2){
             const card = document.createElement('div');
             card.classList.add('card');
             
@@ -79,7 +79,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
             // Agregar la tarjeta al contenedor de jugadores
             contenedorJugadores.appendChild(card);
+           }
+            
         });
+        document.getElementById('segundo').innerText = jugadores[1].nombre;
+        document.getElementById('puntos-segundo').innerText = jugadores[1].puntuacion + " pts.";
+        const imagen2 = document.createElement('img');
+        imagen2.src = jugadores[1].foto;
+        document.getElementById("foto-segundo").appendChild(imagen2);
+
+        document.getElementById('primero').innerText = jugadores[0].nombre;
+        document.getElementById('puntos-primero').innerText = jugadores[0].puntuacion+ " pts.";
+        const imagen1 = document.createElement('img');
+        imagen1.src = jugadores[0].foto;
+        document.getElementById("foto-primero").appendChild(imagen1);
+
+        document.getElementById('tercero').innerText = jugadores[2].nombre;
+        document.getElementById('puntos-tercero').innerText = jugadores[2].puntuacion+ " pts.";
+        const imagen3 = document.createElement('img');
+        imagen3.src = jugadores[2].foto;
+        document.getElementById("foto-tercero").appendChild(imagen3);
+
     }
     
     
