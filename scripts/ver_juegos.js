@@ -32,13 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
             juegoElement.innerHTML = `
                 <h2>${juego.nombre}</h2>
                 <div class="equipos">
-                    ${juego.equipos.map((equipo, index) => `
-                        <div class="jugador">
-                            <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
-                            <span>${equipo.integrantes}</span>
-                        </div>
-                    `).join('')}
-                </div>
+    ${juego.equipos
+        .sort((a, b) => a.posicion - b.posicion) // Ordenar por posición
+        .map((equipo, index) => `
+            <div class="jugador">
+                <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
+                <span>${equipo.integrantes}</span>
+            </div>
+        `)
+        .join('')}
+</div>
             `;
             listaJuegosContainer.appendChild(juegoElement);
         }
