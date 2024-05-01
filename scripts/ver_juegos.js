@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', function() {
             juegoElement.classList.add('juego');
             juegoElement.innerHTML = `
                 <h2>${juego.nombre}</h2>
-                <div class="equipos">
-    ${juego.equipos
-       
-        .map((equipo, index) => `
-            <div class="jugador">
-                <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
-                <span>${equipo.integrantes}</span>
-            </div>
+                <div class="jugadores">
+                    ${juego.jugadores.map((jugador, index) => `
+                        <div class="jugador">
+                            <span>${index + 1}. ${jugador.nombre}</span>
+                            
+                        </div>
+                    `).join('')}
+                </div>
         `)
         .join('')}
 </div>
