@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `).join('')}
                 </div>
-        `)
-        .join('')}
-</div>
+     
 
             `;
             listaJuegosContainer.appendChild(juegoElement);
