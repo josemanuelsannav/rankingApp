@@ -1,50 +1,30 @@
-* {
-    box-sizing: border-box;
-  }
-  
-  body {
-    margin: 0;
-    font-family: sans-serif;
-    background: #f5f6f7;
-  }
-  
-  .header {
-    text-align: center;
-    text-transform: uppercase;
-    padding: 32px;
-    background-color: #0a0a23;
-    color: #fff;
-    border-bottom: 4px solid #fdb347;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px 10px;
-  }
-  
-  .juego {
-    display: inline-block; 
-    height: auto;
-    max-width: 350px;
-    
-    object-fit: cover;
-    border-radius: 10px;
-    border-color:  #fdb347;
-    border-width: 4px; /* Cambia el valor según el grosor deseado */
-    border-style: solid; /* Establece el estilo del borde */
-    padding: 5px 20px 20px 20px; 
-    margin: 10px;
+body{
+  margin: 0px;
 }
 
+
+.header {
+  text-align: center;
+  text-transform: uppercase;
+  padding: 32px;
+  background-color: #0a0a23;
+  color: #fff;
+  border-bottom: 4px solid #fdb347;
+}
+
+.container {
+  padding: 16px;
   
-  .container::after {
-    content: "";
-    width: 350px;
-  }
+}
+.equipo{
+  padding-bottom: 5px;
+}
+.borrar-equipo-btn{
+ margin-left: 10px;
+}
+.posicion{
+  margin-left: 10px;
+}
+.integrantes{
+  margin-left: 10px;
+}

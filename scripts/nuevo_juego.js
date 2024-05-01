@@ -71,19 +71,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
         return contador;
     }
-    
+
+    let jugadoresDeJuego = [];
+
     function actualizarPuntuacion() {
         // Obtener los jugadores del almacenamiento local
         const jugadoresAlmacenados = JSON.parse(localStorage.getItem('jugadores')) || [];
         const cantidadJugadores = jugadoresAlmacenados.length;
         const numeroCheckboxMarcados = contarCheckboxMarcados();
-        console.log(numeroCheckboxMarcados);
         // Recorrer los jugadores y actualizar su puntuación
         jugadores.forEach(function(jugador, index) {
             // Buscar al jugador en el almacenamiento local por su nombre
             const checkbox = document.querySelector(`input[data-nombre="${jugador.nombre}"]`);
             if (checkbox && !checkbox.checked) {
                 const jugadorAlmacenado = jugadoresAlmacenados.find(j => j.nombre === jugador.nombre);
+                let x = cantidadJugadores - numeroCheckboxMarcados - index - 1;
+                console.log(x);
+                const newJugador = {nombre:jugador.nombre,puntuacion:x,foto:jugador.foto};
+                jugadoresDeJuego.push(newJugador);
                 if (jugadorAlmacenado) {
                     // Si se encuentra al jugador, sumar su puntuación anterior con la nueva puntuación calculada
                     jugador.puntuacion = jugadorAlmacenado.puntuacion + (cantidadJugadores - numeroCheckboxMarcados) - index - 1;
@@ -93,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        console.log(jugadoresDeJuego);
     }
 
     function guardarJugadoresEnLocalStorage() {
@@ -103,8 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function guardarJuegoEnLocalStorage() {
         const nuevoJuego = {
             nombre: document.getElementById('nombre-juego').value,
-            jugadores: jugadores
+            jugadores: jugadoresDeJuego
         };
+        console.log(nuevoJuego);
     
         let juegos = JSON.parse(localStorage.getItem('juegos')) || [];
     
@@ -159,10 +166,20 @@ function agregarEquipo() {
     puestoInput.placeholder = 'Puesto del Equipo ';
     puestoInput.classList.add('posicion');
 
+    // Crear botón para borrar el equipo
+    const borrarEquipoBtn = document.createElement('button');
+    borrarEquipoBtn.textContent = 'Borrar';
+    borrarEquipoBtn.classList.add('borrar-equipo-btn');
+    borrarEquipoBtn.addEventListener('click', function() {
+        equipoDiv.remove(); // Eliminar el div del equipo al hacer clic en el botón de borrar
+    });
     // Agregar los inputs al div del equipo
     equipoDiv.appendChild(equipoInput);
     equipoDiv.appendChild(integrantesInput);
     equipoDiv.appendChild(puestoInput);
+    equipoDiv.appendChild(borrarEquipoBtn);
+    equipoDiv.appendChild(document.createElement('br'));
+
     // Agregar el div del equipo al contenedor de equipos
     equiposContainer.appendChild(equipoDiv);
 }
