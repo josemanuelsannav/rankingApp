@@ -13,14 +13,18 @@ document.addEventListener('DOMContentLoaded', function() {
             juegoElement.classList.add('juego');
             juegoElement.innerHTML = `
                 <h2>${juego.nombre}</h2>
-                <div class="jugadores">
-                    ${juego.jugadores.map((jugador, index) => `
-                        <div class="jugador">
-                            <span>${index + 1}. ${jugador.nombre}</span>
-                            
-                        </div>
-                    `).join('')}
-                </div>
+                <div class="equipos">
+    ${juego.equipos
+        .sort((a, b) => a.posicion - b.posicion) // Ordenar por posición
+        .map((equipo, index) => `
+            <div class="jugador">
+                <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
+                <span>${equipo.integrantes}</span>
+            </div>
+        `)
+        .join('')}
+</div>
+
             `;
             listaJuegosContainer.appendChild(juegoElement);
         }else{
