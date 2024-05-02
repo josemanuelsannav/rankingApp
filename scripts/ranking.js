@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const nuevoJuegoBtn = document.getElementById('nuevo-juego-btn');
     const verJuegoBtn = document.getElementById('ver-juegos-btn');
     const downloadDataBtn = document.getElementById("download");
-    
+
     const modal = document.getElementById('modal');
     const infoUsuario = document.getElementById('informacion-usuario');
     const cerrarModal = document.querySelector('.cerrar-modal');
@@ -191,49 +191,40 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         modalContenido.appendChild(cerrarModal);
         modalContenido.appendChild(titulo);
-    
+
         // Crear lienzo para la gráfica
         const canvas = document.createElement('canvas');
         canvas.id = 'grafica';
         modalContenido.appendChild(canvas);
-    
+
         // Graficar las estadísticas
         let partidas_jugadas = 0;
-        let primera_posicion = 0;
-        let segunda_posicion = 0;
-        let tercera_posicion = 0;
-        let cuarta_posicion = 0;
-    
+
+        const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+        let posiciones = new Array(jugadores.length).fill(0);
+        let nombre_posiciones = [];
+        for (let i = 0; i < jugadores.length; i++) {
+            nombre_posiciones.push("Posicion " + (i + 1));
+        }
         juegos.forEach(juego => {
+            console.log(juego);
             if (juego.equipos) {
                 juego.equipos.forEach(equipo => {
                     const found = equipo.integrantes.find((element) => element == jugador.nombre);
                     if (found) {
+                        console.log(equipo);
                         partidas_jugadas++;
-                        if (equipo.posicion == 1) {
-                            primera_posicion++;
-                        } else if (equipo.posicion == 2) {
-                            segunda_posicion++;
-                        } else if (equipo.posicion == 3) {
-                            tercera_posicion++;
-                        } else if (equipo.posicion == 4) {
-                            cuarta_posicion++;
-                        }
+                        posiciones[equipo.posicion - 1]++;
+                        console.log(posiciones);
                     }
                 })
             } else {
                 const found = juego.jugadores.find((element) => element.nombre == jugador.nombre);
                 if (found) {
                     partidas_jugadas++;
-                    if (found.puntuacion == juego.jugadores.length - 1) {
-                        primera_posicion++;
-                    }else if(found.puntuacion == juego.jugadores.length - 2){
-                        segunda_posicion++;
-                    }else if(found.puntuacion == juego.jugadores.length - 3){
-                        tercera_posicion++;
-                    }else if(found.puntuacion == juego.jugadores.length - 4){
-                        cuarta_posicion++;
-                    }
+                    console.log("Partida normal " + (juego.jugadores.length - found.puntuacion - 1));
+                    posiciones[juego.jugadores.length - found.puntuacion - 1]++;
+                    console.log(posiciones);
                 }
             }
         });
@@ -241,11 +232,11 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.appendChild(modalContenido);
         document.body.appendChild(modal);
         modal.style.display = 'block';
-    
+
         // Configurar la gráfica
         var ctx = canvas.getContext('2d');
         var maximo = partidas_jugadas; // Utilizar el número total de partidas jugadas como máximo
-        var valores = [primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
+        var valores = posiciones;//[primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
         var porcentajes = valores.map(valor => (valor / maximo) * 100);
         console.log(valores, porcentajes);
         console.log(maximo);
@@ -253,9 +244,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var grafica = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Primera posición', 'Segunda posición', 'Tercera posición', 'Cuarta posición'],
+                labels: nombre_posiciones,//['Primera posición', 'Segunda posición', 'Tercera posición', 'Cuarta posición'],
                 datasets: [{
-                    label: 'Partidas jugadas: '+partidas_jugadas,
+                    label: 'Partidas jugadas: ' + partidas_jugadas,
                     data: valores,
                     backgroundColor: 'rgba(54, 162, 235, 0.5)',
                     borderColor: 'rgba(54, 162, 235, 1)',
@@ -272,11 +263,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     }]
                 }
             }
-            
+
         });
     }
-    
-    
-    
-    
+
+
+
+
 });
