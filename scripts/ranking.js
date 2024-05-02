@@ -45,7 +45,16 @@ document.addEventListener('DOMContentLoaded', function() {
         contenedorJugadores.innerHTML = '';
     
         // Ordenar los jugadores por puntuación
-        jugadores.sort((a, b) => b.puntuacion - a.puntuacion);
+        jugadores.sort((a, b) => {
+            // Comparar por puntuación
+            if (b.puntuacion !== a.puntuacion) {
+                return b.puntuacion - a.puntuacion; // Orden descendente por puntuación
+            } else {
+                // Si la puntuación es la misma, comparar por winrate
+                return calcularWinrate(b) - calcularWinrate(a); // Orden descendente por winrate
+            }
+        });
+        
     
         // Recorrer todos los jugadores y crear una tarjeta para cada uno
      
@@ -76,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
             contenido.appendChild(puntuacion);
 
             const winrate = document.createElement('p');
-            winrate.textContent = 'Winrate: ' + calcularWinrate(jugador)+"%";
+            parseFloat(calcularWinrate(jugador).toFixed(2));
+            winrate.textContent = 'Winrate: ' + parseFloat(calcularWinrate(jugador).toFixed(2)) + "%";
             contenido.appendChild(winrate);
     
             card.appendChild(contenido);
@@ -87,21 +97,21 @@ document.addEventListener('DOMContentLoaded', function() {
             
         });
         document.getElementById('segundo').innerText = jugadores[1].nombre;
-        let winrate = calcularWinrate(jugadores[1]);
+        winrate = parseFloat(calcularWinrate(jugadores[1]).toFixed(2));
         document.getElementById('puntos-segundo').innerText = jugadores[1].puntuacion + " pts.   Wr: "+winrate+"%";
         const imagen2 = document.createElement('img');
         imagen2.src = jugadores[1].foto;
         document.getElementById("foto-segundo").appendChild(imagen2);
 
         document.getElementById('primero').innerText = jugadores[0].nombre;
-        winrate = calcularWinrate(jugadores[0]);
+        winrate = parseFloat(calcularWinrate(jugadores[0]).toFixed(2));
         document.getElementById('puntos-primero').innerText = jugadores[0].puntuacion+ " pts.   Wr: "+winrate+"%";
         const imagen1 = document.createElement('img');
         imagen1.src = jugadores[0].foto;
         document.getElementById("foto-primero").appendChild(imagen1);
 
         document.getElementById('tercero').innerText = jugadores[2].nombre;
-        winrate = calcularWinrate(jugadores[2]);
+        winrate = parseFloat(calcularWinrate(jugadores[2]).toFixed(2));
         document.getElementById('puntos-tercero').innerText = jugadores[2].puntuacion+ " pts.   Wr: "+winrate+"%";
         const imagen3 = document.createElement('img');
         imagen3.src = jugadores[2].foto;

@@ -28,18 +28,23 @@ document.addEventListener('DOMContentLoaded', function () {
             // Añadir evento de click al botón de borrar
             const borrarBtn = juegoElement.querySelector('.borrar-btn');
             borrarBtn.addEventListener('click', function () {
-                // Eliminar el juegoElement del DOM
-                juegoElement.remove();
-                // Eliminar el juego de la lista de juegos
-                const index = juegos.indexOf(juego);
-                if (index !== -1) {
-                    borrarPuntuacionJuego(juego);
-                    juegos.splice(index, 1);
-                    localStorage.setItem('juegos', JSON.stringify(juegos));
+                // Mostrar ventana de confirmación
+                const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
+                
+                // Verificar si se ha confirmado la eliminación
+                if (confirmacion) {
+                    // Eliminar el juegoElement del DOM
+                    juegoElement.remove();
+                    // Eliminar el juego de la lista de juegos
+                    const index = juegos.indexOf(juego);
+                    if (index !== -1) {
+                        borrarPuntuacionJuego(juego);
+                        juegos.splice(index, 1);
+                        localStorage.setItem('juegos', JSON.stringify(juegos));
+                    }
                 }
-
             });
-
+            
             listaJuegosContainer.appendChild(juegoElement);
         } else {
 
@@ -61,19 +66,24 @@ document.addEventListener('DOMContentLoaded', function () {
             <br>
             <button class="borrar-btn">Borrar</button>
             `;
-            // Añadir evento de click al botón de borrar
+            
             const borrarBtn = juegoElement.querySelector('.borrar-btn');
             borrarBtn.addEventListener('click', function () {
-                // Eliminar el juegoElement del DOM
-                juegoElement.remove();
-                // Eliminar el juego de la lista de juegos
-                const index = juegos.indexOf(juego);
-                if (index !== -1) {
-                    borrarPuntuacionJuegoEquipo(juego);
-                    juegos.splice(index, 1);
-                    localStorage.setItem('juegos', JSON.stringify(juegos));
+                // Mostrar ventana de confirmación
+                const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
+                
+                // Verificar si se ha confirmado la eliminación
+                if (confirmacion) {
+                    // Eliminar el juegoElement del DOM
+                    juegoElement.remove();
+                    // Eliminar el juego de la lista de juegos
+                    const index = juegos.indexOf(juego);
+                    if (index !== -1) {
+                        borrarPuntuacionJuegoEquipo(juego);
+                        juegos.splice(index, 1);
+                        localStorage.setItem('juegos', JSON.stringify(juegos));
+                    }
                 }
-
             });
             listaJuegosContainer.appendChild(juegoElement);
         }
