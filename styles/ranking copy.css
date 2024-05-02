@@ -211,6 +211,9 @@ svg:not(:root) {
 .jss1039 {
     display: flex;
     line-height: 1;
+   
+    justify-content: center; /* Horizontally center the content */
+    
 }
 
 .MuiTypography-subtitle2 {
