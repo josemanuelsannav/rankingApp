@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 card.appendChild(imagen);
 
                 imagen.addEventListener('click', () => {
-                    console.log("--------------------");
                     abrirModal(jugador);
                 });
 
@@ -113,6 +112,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const imagen2 = document.createElement('img');
         imagen2.src = jugadores[1].foto;
         document.getElementById("foto-segundo").appendChild(imagen2);
+        imagen2.addEventListener('click', () => {
+            abrirModal(jugadores[1]);
+        });
 
         document.getElementById('primero').innerText = jugadores[0].nombre;
         winrate = parseFloat(calcularWinrate(jugadores[0]).toFixed(2));
@@ -120,6 +122,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const imagen1 = document.createElement('img');
         imagen1.src = jugadores[0].foto;
         document.getElementById("foto-primero").appendChild(imagen1);
+        imagen1.addEventListener('click', () => {
+            abrirModal(jugadores[0]);
+        });
 
         document.getElementById('tercero').innerText = jugadores[2].nombre;
         winrate = parseFloat(calcularWinrate(jugadores[2]).toFixed(2));
@@ -127,6 +132,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const imagen3 = document.createElement('img');
         imagen3.src = jugadores[2].foto;
         document.getElementById("foto-tercero").appendChild(imagen3);
+        imagen3.addEventListener('click', () => {
+            abrirModal(jugadores[2]);
+        });
 
     }
 
@@ -169,7 +177,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function abrirModal(jugador) {
-
         const modal = document.createElement('div');
         modal.classList.add('modal');
         const modalContenido = document.createElement('div');
@@ -184,13 +191,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         modalContenido.appendChild(cerrarModal);
         modalContenido.appendChild(titulo);
-        //grafica de las estadisticas
-        let partidas_jugadas=0;
-        let primera_posicion =0;
-        let segunda_posicion=0;
-        let tercera_posicion=0;
-        let cuarta_posicion=0;
-       
+    
+        // Crear lienzo para la gráfica
+        const canvas = document.createElement('canvas');
+        canvas.id = 'grafica';
+        modalContenido.appendChild(canvas);
+    
+        // Graficar las estadísticas
+        let partidas_jugadas = 0;
+        let primera_posicion = 0;
+        let segunda_posicion = 0;
+        let tercera_posicion = 0;
+        let cuarta_posicion = 0;
+    
         juegos.forEach(juego => {
             if (juego.equipos) {
                 juego.equipos.forEach(equipo => {
@@ -199,11 +212,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         partidas_jugadas++;
                         if (equipo.posicion == 1) {
                             primera_posicion++;
-                        }else if(equipo.posicion==2){
+                        } else if (equipo.posicion == 2) {
                             segunda_posicion++;
-                        }else if(equipo.posicion==3){
+                        } else if (equipo.posicion == 3) {
                             tercera_posicion++;
-                        }else if(equipo.posicion==4){
+                        } else if (equipo.posicion == 4) {
                             cuarta_posicion++;
                         }
                     }
@@ -213,7 +226,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (found) {
                     partidas_jugadas++;
                     if (found.puntuacion == juego.jugadores.length - 1) {
-                        victorias++;
+                        primera_posicion++;
+                    }else if(found.puntuacion == juego.jugadores.length - 2){
+                        segunda_posicion++;
+                    }else if(found.puntuacion == juego.jugadores.length - 3){
+                        tercera_posicion++;
+                    }else if(found.puntuacion == juego.jugadores.length - 4){
+                        cuarta_posicion++;
                     }
                 }
             }
@@ -222,7 +241,41 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.appendChild(modalContenido);
         document.body.appendChild(modal);
         modal.style.display = 'block';
+    
+        // Configurar la gráfica
+        var ctx = canvas.getContext('2d');
+        var maximo = partidas_jugadas; // Utilizar el número total de partidas jugadas como máximo
+        var valores = [primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
+        var porcentajes = valores.map(valor => (valor / maximo) * 100);
+        console.log(valores, porcentajes);
+        console.log(maximo);
+        // Crear la gráfica de barras
+        var grafica = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Primera posición', 'Segunda posición', 'Tercera posición', 'Cuarta posición'],
+                datasets: [{
+                    label: 'Partidas jugadas: '+partidas_jugadas,
+                    data: valores,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true, // o false, dependiendo de tus necesidades
+                            max: 100 // o cualquier otro valor máximo válido
+                        }
+                    }]
+                }
+            }
+            
+        });
     }
+    
     
     
     
