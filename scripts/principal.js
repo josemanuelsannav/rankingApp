@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
         // Obtener los valores de los campos del formulario
-        const nombre = document.getElementById('nombre').value;
+        const nombre = document.getElementById('nombre').value.trim();
         const foto = document.getElementById('foto').value;
 
         // Crear un objeto jugador con los valores obtenidos
