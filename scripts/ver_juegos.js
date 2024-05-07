@@ -111,7 +111,12 @@ document.addEventListener('DOMContentLoaded', function () {
             equipo.integrantes.forEach(function (integrante) {
                 const index = jugadores.findIndex(j => j.nombre === integrante);
                 if (index !== -1) {
-                    jugadores[index].puntuacion -= juego.equipos.length - equipo.posicion ;
+                    if(!equipo.puntos || equipo.puntos==null){
+                        jugadores[index].puntuacion -= juego.equipos.length - equipo.posicion ;
+                    }else{
+                        jugadores[index].puntuacion -= equipo.puntos;
+                    }
+                    
                 }
             });
         });
