@@ -166,6 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
             puestoInput.placeholder = 'Puesto del Equipo ';
             puestoInput.classList.add('posicion');
 
+            //Crear input para la puntuacion
+            const puntosInput = document.createElement('input');
+            puntosInput.type = 'number';
+            puntosInput.placeholder = 'Puntos para Equipo ';
+            puntosInput.classList.add('puntos');
+
             // Crear botón para borrar el equipo
             const borrarEquipoBtn = document.createElement('button');
             borrarEquipoBtn.textContent = 'Borrar';
@@ -177,6 +183,8 @@ document.addEventListener('DOMContentLoaded', function () {
             equipoDiv.appendChild(equipoInput);
             equipoDiv.appendChild(integrantesInput);
             equipoDiv.appendChild(puestoInput);
+            equipoDiv.appendChild(puntosInput);
+
             equipoDiv.appendChild(borrarEquipoBtn);
             equipoDiv.appendChild(document.createElement('br'));
 
@@ -203,9 +211,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 const equipoNombre = div.querySelector('.equipo-nombre').value;
                 const integrantes = div.querySelector('.integrantes').value.split(',').map(item => item.trim());
                 const puesto = div.querySelector('.posicion').value;
-                equipos.push({ nombre: equipoNombre, integrantes: integrantes, posicion: puesto });
+                const puntos = div.querySelector('.puntos').value;
+                equipos.push({ nombre: equipoNombre, integrantes: integrantes, posicion: puesto, puntos: puntos });
             });
-            
+
 
             // Crear objeto con los datos del juego
             const juego = {
@@ -232,7 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
             for (const integrante of equipo.integrantes) {
                 const jugador = jugadores.find(jugador => jugador.nombre === integrante);
                 if (jugador) {
-                    jugador.puntuacion = jugador.puntuacion + (juego.equipos.length - equipo.posicion);
+                    if (!equipo.puntos || equipo.puntos == null) {
+                        jugador.puntuacion = jugador.puntuacion + (juego.equipos.length - equipo.posicion);
+                    } else {
+                        jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(equipo.puntos);
+
+                    }
                 }
             }
         }

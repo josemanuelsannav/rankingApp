@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const imagen2 = document.createElement('img');
         imagen2.src = jugadores[1].foto;
         document.getElementById("foto-segundo").appendChild(imagen2);
+        
         imagen2.addEventListener('click', () => {
             abrirModal(jugadores[1]);
         });
