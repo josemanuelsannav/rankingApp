@@ -128,11 +128,7 @@ body{
     align-items: flex-end;
 }
 
-.jss1043 {
-    height: 170px;
-    position: relative;
-    background-color: #f5f5f5;
-}
+
 
 .jss1041 {
     width: 33%;
@@ -266,16 +262,20 @@ h6 {
 }
 
 .jss1042 {
-    height: 220px;
+    height: 280px;
     position: relative;
     background-color: #fffae0;
 }
 .jss1044 {
-    height: 170px;
+    height: 210px;
     position: relative;
     background-color: #ffe8d1;
 }
-
+.jss1043 {
+    height: 240px;
+    position: relative;
+    background-color: #f5f5f5;
+}
 
 .MuiAvatar-root {
     width: 40px;
