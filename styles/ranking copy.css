@@ -266,7 +266,7 @@ h6 {
     justify-content: center;
 }
 
-.foto {
+.foto img {
     -webkit-font-smoothing: antialiased;
     font-weight: 400;
     text-align: center;
@@ -287,6 +287,7 @@ h6 {
     width: 64px;
     height: 64px;
     margin: 1em;
+    object-fit: cover;
 }
 
 .jss1048{
