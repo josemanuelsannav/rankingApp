@@ -54,6 +54,16 @@ body{
 .botones-container button {
     margin-left: 10px; /* Espacio entre los botones */
 }
+
+@media (max-width: 500px) {
+    .botones-container button {
+        margin-left: 20px; /* Aumentar el espacio entre los botones para pantallas pequeñas */
+    }
+    .botones-container button:last-child {
+        margin-top: 10px; /* Añadir un margen superior al tercer botón para separarlo de los otros dos */
+    }
+}
+
 .header {
     text-align: center;
     text-transform: uppercase;
