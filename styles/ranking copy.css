@@ -311,8 +311,8 @@ h6 {
     justify-content: center;
     color: #fff;
     background-color: #bdbdbd;
-    width: 64px;
-    height: 64px;
+    width: 100px;
+    height: 100px;
     margin: 1em;
     object-fit: cover;
 }
