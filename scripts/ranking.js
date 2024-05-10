@@ -56,14 +56,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (b.puntuacion !== a.puntuacion) {
                 return b.puntuacion - a.puntuacion; // Orden descendente por puntuación
             } else {
-                // Si la puntuación es la misma, comparar por winrate
-                return calcularWinrate(b) - calcularWinrate(a); // Orden descendente por winrate
+                if (calcularWinrate(b) !== calcularWinrate(a)) {
+                    return calcularWinrate(b) - calcularWinrate(a); // Orden descendente por winrate
+                } else {
+                    // Si el winrate es el mismo, comparar por nombre alfabéticamente en orden contrario
+                    return b.nombre.localeCompare(a.nombre); // Orden alfabético contrario por nombre
+                }
             }
         });
 
 
         // Recorrer todos los jugadores y crear una tarjeta para cada uno
-
+        jugadores.sort
         jugadores.forEach(function (jugador, index) {
             if (index != 0 && index != 1 && index != 2) {
                 const card = document.createElement('div');
@@ -106,6 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         });
+
+        
         document.getElementById('segundo').innerText = jugadores[1].nombre;
         winrate = parseFloat(calcularWinrate(jugadores[1]).toFixed(2));
         document.getElementById('puntos-segundo').innerText = jugadores[1].puntuacion + " pts.   Wr: " + winrate + "%";
