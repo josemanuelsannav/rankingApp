@@ -252,4 +252,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
     };
+
+    document.getElementById('duelo-form').addEventListener('submit', function(event) {
+        // Prevenir la acción por defecto del formulario
+        event.preventDefault();
+    
+        // Obtener los valores de los campos de entrada
+        var nombreDuelo = document.getElementById('nombre-duelo').value;
+        var apuesta = document.getElementById('apuesta').value;
+        var ganador = document.getElementById('Ganador').value.trim();
+        var perdedor = document.getElementById('Perdedor').value.trim();
+    
+        // Ahora puedes usar los valores obtenidos
+        //console.log(nombreDuelo, apuesta, jugador1, jugador2);
+        const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+
+        for(const jugador of jugadores){
+            if(jugador.nombre === ganador){
+                jugador.puntuacion = jugador.puntuacion + parseInt(apuesta);
+            }
+            if(jugador.nombre === perdedor){
+                jugador.puntuacion = jugador.puntuacion - parseInt(apuesta);
+            }
+        }
+        localStorage.setItem('jugadores', JSON.stringify(jugadores));
+
+        const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
+        duelos.push({nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor});
+        localStorage.setItem('duelos', JSON.stringify(duelos));
+        alert('Puntuaciones actualizadas y duelo guardado con éxito.');
+        window.location.href = '/ranking';
+    }); 
 });

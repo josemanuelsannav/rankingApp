@@ -2,12 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const nuevoJuegoBtn = document.getElementById('nuevo-juego-btn');
     const verJuegoBtn = document.getElementById('ver-juegos-btn');
     const downloadDataBtn = document.getElementById("download");
-
+    const dueloBtn = document.getElementById("ver-duelos-btn");
     const modal = document.getElementById('modal');
     const infoUsuario = document.getElementById('informacion-usuario');
     const cerrarModal = document.querySelector('.cerrar-modal');
 
-
+    dueloBtn.addEventListener('click', function () {
+        window.location.href = '/ver_duelos';
+    });
 
     verJuegoBtn.addEventListener('click', function () {
         // Redireccionar a la otra vista

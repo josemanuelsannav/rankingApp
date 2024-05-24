@@ -29,7 +29,7 @@
             </div>
         </div>
     </div>
-    <div class = "container">
+    <div class="container">
         <h1>Por equipos</h1>
         <div>
             <label for="nombre-juego-equipo">Nombre del Juego:</label>
@@ -45,8 +45,26 @@
     <script src="../scripts/sortable.js"></script>
     <script src="../scripts/nuevo_juego.js"></script>
     <br>
-    <br>
-    <br>
+
+    <div class="container">
+        <h1>Duelo</h1>
+        <div class="form-container">
+            <form id="duelo-form">
+                <label for="nombre-duelo">Nombre del duelo:</label>
+                <input type="text" id="nombre-duelo" name="nombre-duelo" required>
+                <button type="submit">Guardar duelo</button>
+                <br><br>
+                <label for="apuesta-duelo">Apuesta del duelo:</label>
+                <input type="number" id="apuesta" name="apuesta" placeholder="Apuesta" required>
+                <h3>
+                    <input type="text" id="Ganador" name="Ganador" placeholder="Ganador" required>
+                    VS
+                    <input type="text" id="Perdedor" name="Perdedor" placeholder="Perdedor" required>
+                </h3>
+            </form>
+        </div>
+
+    </div>
     <br>
     <br><br>
     <br>
@@ -56,7 +74,7 @@
     <br>
     <br>
     <br>
-    
+
 </body>
 
 </html>
