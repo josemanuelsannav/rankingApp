@@ -274,6 +274,70 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         });
+        const titulo2 = document.createElement('h1');
+        titulo2.textContent = "Duelos";
+        modalContenido.appendChild(titulo2);
+
+        // Crear lienzo para la gráfica
+        const canvas2 = document.createElement('canvas');
+        canvas2.id = 'grafica';
+        modalContenido.appendChild(canvas2);
+
+        // Graficar las estadísticas
+        let duelosJugados = 0;
+
+        //const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+        let posiciones2 = new Array(2).fill(0);
+        let nombre_posiciones2 = ["Ganador", "Perdedor"]; 
+        
+
+        const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
+        for(const duelo of duelos){
+            if(duelo.ganador == jugador.nombre || duelo.perdedor == jugador.nombre){
+                duelosJugados++;
+                if(duelo.ganador == jugador.nombre){
+                    posiciones2[0]++;
+                }else{
+                    posiciones2[1]++;
+                }
+            }
+        }
+        modal.appendChild(modalContenido);
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
+
+        // Configurar la gráfica
+        var ctx = canvas2.getContext('2d');
+        var maximo = duelosJugados; // Utilizar el número total de partidas jugadas como máximo
+        var valores = posiciones2;//[primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
+        var porcentajes = valores.map(valor => (valor / maximo) * 100);
+        console.log(valores, porcentajes);
+        console.log(maximo);
+        // Crear la gráfica de barras
+        var grafica = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: nombre_posiciones2,//['Primera posición', 'Segunda posición', 'Tercera posición', 'Cuarta posición'],
+                datasets: [{
+                    label: 'Duelos jugados: ' + duelosJugados,
+                    data: valores,
+                    backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],        
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true, // o false, dependiendo de tus necesidades
+                            max: 100 // o cualquier otro valor máximo válido
+                        }
+                    }]
+                }
+            }
+
+        });
     }
 
 
