@@ -268,6 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
 
         for(const jugador of jugadores){
+            
             if(jugador.nombre === ganador){
                 jugador.puntuacion = jugador.puntuacion + parseInt(apuesta);
             }
