@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Almacenar los datos de jugadores y juegos en el localStorage
                     almacenarDatosEnLocalStorage(jsonData.jugadores, 'jugadores');
                     almacenarDatosEnLocalStorage(jsonData.juegos, 'juegos');
-                    almacenarDatosEnLocalStorage(jsonData.nombre-juegos, 'nombre-juegos');
+                    almacenarDatosEnLocalStorage(jsonData.nombre_juegos, 'nombre-juegos');
                     almacenarDatosEnLocalStorage(jsonData.duelos, 'duelos');
                     window.location.reload();
                 } catch (error) {
