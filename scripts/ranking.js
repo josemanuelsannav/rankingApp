@@ -26,9 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Obtener los datos almacenados en el localStorage
             const jugadores = JSON.parse(localStorage.getItem('jugadores'));
             const juegos = JSON.parse(localStorage.getItem('juegos'));
-
+            const duelos = JSON.parse(localStorage.getItem('duelos'));
+            const nombre_juegos = JSON.parse(localStorage.getItem('nombre-juegos'));
             // Combinar los datos en un objeto JSON
-            const datosJSON = { jugadores, juegos };
+            const datosJSON = { jugadores, juegos, duelos, nombre_juegos};
 
             // Convertir el objeto JSON a una cadena JSON
             const jsonString = JSON.stringify(datosJSON, null, 2);
