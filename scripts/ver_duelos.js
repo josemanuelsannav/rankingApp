@@ -1,3 +1,4 @@
+let isSearching = false;
 document.addEventListener('DOMContentLoaded', function () {
     const listaJuegosContainer = document.getElementById('lista-juegos');
 
@@ -5,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
 
     // Mostrar cada juego y los jugadores dentro de cada juego
+    
     duelos.forEach(function (duelo) {
 
 
@@ -103,97 +105,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        console.log(duelosResultado);
+        
         //eliminamos los duelos que estaban puestos 
         while (listaJuegosContainer.firstChild) {
             listaJuegosContainer.removeChild(listaJuegosContainer.firstChild);
         }
-        //metemos los del filtro
-        /* duelosGanados.forEach(function (duelo) {
- 
- 
-             const dueloElement = document.createElement('div');
-             dueloElement.classList.add('dueloGanado');
-             dueloElement.innerHTML = `
-                     <h2>${duelo.nombre}</h2>
-                     <div class="jugadores">
-                         Ganador: ${duelo.ganador}
-                         <br>
-                         Perdedor: ${duelo.perdedor}
-                         <br>
-                         Apuesta: ${duelo.apuesta}
-                     </div>
-                     <br>
-                     <button class="borrar-btn">Borrar</button>
-          
-     
-                 `;
-             // Añadir evento de click al botón de borrar
-             const borrarBtn = dueloElement.querySelector('.borrar-btn');
-             borrarBtn.addEventListener('click', function () {
-                 // Mostrar ventana de confirmación
-                 const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
-     
-                 // Verificar si se ha confirmado la eliminación
-                 if (confirmacion) {
-                     // Eliminar el dueloElement del DOM
-                     dueloElement.remove();
-                     // Eliminar el duelo de la lista de duelos
-                     const index = duelos.indexOf(duelo);
-                     if (index !== -1) {
-                         borrarPuntuacionDuelo(duelo);
-                         duelos.splice(index, 1);
-                         localStorage.setItem('duelos', JSON.stringify(duelos));
-                     }
-                 }
-             });
-     
-             listaJuegosContainer.appendChild(dueloElement);
-     
-         });
-         
-         duelosPerdidos.forEach(function (duelo) {
- 
- 
-             const dueloElement = document.createElement('div');
-             dueloElement.classList.add('dueloPerdido');
-             dueloElement.innerHTML = `
-                     <h2>${duelo.nombre}</h2>
-                     <div class="jugadores">
-                         Ganador: ${duelo.ganador}
-                         <br>
-                         Perdedor: ${duelo.perdedor}
-                         <br>
-                         Apuesta: ${duelo.apuesta}
-                     </div>
-                     <br>
-                     <button class="borrar-btn">Borrar</button>
-          
-     
-                 `;
-             // Añadir evento de click al botón de borrar
-             const borrarBtn = dueloElement.querySelector('.borrar-btn');
-             borrarBtn.addEventListener('click', function () {
-                 // Mostrar ventana de confirmación
-                 const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
-     
-                 // Verificar si se ha confirmado la eliminación
-                 if (confirmacion) {
-                     // Eliminar el dueloElement del DOM
-                     dueloElement.remove();
-                     // Eliminar el duelo de la lista de duelos
-                     const index = duelos.indexOf(duelo);
-                     if (index !== -1) {
-                         borrarPuntuacionDuelo(duelo);
-                         duelos.splice(index, 1);
-                         localStorage.setItem('duelos', JSON.stringify(duelos));
-                     }
-                 }
-             });
-     
-             listaJuegosContainer.appendChild(dueloElement);
-     
-         });*/
+        
 
         duelosResultado.forEach(function (dueloResultado) {
 

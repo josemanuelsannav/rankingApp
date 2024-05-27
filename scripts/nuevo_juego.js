@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ejemplo de carga inicial de jugadores
 
     mostrarJugadores();
+    crearSelects();
 
     function contarCheckboxMarcados() {
         // Seleccionar todos los elementos checkbox con la clase "no-juega"
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function guardarJuegoEnLocalStorage() {
         const nuevoJuego = {
-            nombre: document.getElementById('nombre-juego').value,
+            nombre: document.getElementById('miSelectId-juego-normal').value,
             jugadores: jugadoresDeJuego
         };
         console.log(nuevoJuego);
@@ -196,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
     saveEquipoBtn.addEventListener("click",// Función para guardar los datos del juego en localStorage
         function guardarJuego() {
             // Obtener el nombre del juego
-            const nombreJuego = document.getElementById('nombre-juego-equipo').value;
+            const nombreJuego = document.getElementById('miSelectId-juego-equipo').value;
 
             // Verificar si se ingresó un nombre de juego
             if (nombreJuego.trim() === '') {
@@ -253,35 +254,115 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
     };
 
-    document.getElementById('duelo-form').addEventListener('submit', function(event) {
+    document.getElementById('duelo-form').addEventListener('submit', function (event) {
         // Prevenir la acción por defecto del formulario
         event.preventDefault();
-    
+
         // Obtener los valores de los campos de entrada
-        var nombreDuelo = document.getElementById('nombre-duelo').value;
+        var nombreDuelo = document.getElementById('miSelectId-juego-duelo').value;
         var apuesta = document.getElementById('apuesta').value;
         var ganador = document.getElementById('Ganador').value.trim();
         var perdedor = document.getElementById('Perdedor').value.trim();
-    
+
         // Ahora puedes usar los valores obtenidos
         //console.log(nombreDuelo, apuesta, jugador1, jugador2);
         const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
 
-        for(const jugador of jugadores){
-            
-            if(jugador.nombre === ganador){
+        for (const jugador of jugadores) {
+
+            if (jugador.nombre === ganador) {
                 jugador.puntuacion = jugador.puntuacion + parseInt(apuesta);
             }
-            if(jugador.nombre === perdedor){
+            if (jugador.nombre === perdedor) {
                 jugador.puntuacion = jugador.puntuacion - parseInt(apuesta);
             }
         }
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
 
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        duelos.push({nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor});
+        duelos.push({ nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor });
         localStorage.setItem('duelos', JSON.stringify(duelos));
         alert('Puntuaciones actualizadas y duelo guardado con éxito.');
         window.location.href = '/ranking';
-    }); 
+    });
+
+    function crearSelects() {
+
+
+        //Desplegable de los nombres y tal
+        let selectContainer = document.querySelector(".select-container-juego-normal");
+        let selectElement = document.createElement("select");
+        let opciones =obtenerJuegos();
+        ;
+        opciones.forEach((opcion) => {
+            let optionElement = document.createElement("option");
+            optionElement.text = opcion;
+            optionElement.value = opcion;
+            selectElement.appendChild(optionElement);
+        });
+        selectContainer.appendChild(selectElement)
+        selectElement.setAttribute("name", "miSelect-juego-normal");
+        selectElement.setAttribute("id", "miSelectId-juego-normal");
+
+        let selectContainer2 = document.querySelector(".select-container-juego-equipo");
+        let selectElement2 = document.createElement("select");
+        opciones.forEach((opcion) => {
+            let optionElement = document.createElement("option");
+            optionElement.text = opcion;
+            optionElement.value = opcion;
+            selectElement2.appendChild(optionElement);
+        });
+        selectContainer2.appendChild(selectElement2)
+        selectElement2.setAttribute("name", "miSelect-juego-equipo");
+        selectElement2.setAttribute("id", "miSelectId-juego-equipo");
+
+        let selectContainer3 = document.querySelector(".select-container-juego-duelo");
+        let selectElement3 = document.createElement("select");
+        opciones.forEach((opcion) => {
+            let optionElement = document.createElement("option");
+            optionElement.text = opcion;
+            optionElement.value = opcion;
+            selectElement3.appendChild(optionElement);
+        });
+        selectContainer3.appendChild(selectElement3)
+        selectElement3.setAttribute("name", "miSelect-juego-duelo");
+        selectElement3.setAttribute("id", "miSelectId-juego-duelo");
+    }
+
+    function obtenerJuegos() {
+        let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
+        //console.log(juegos);
+        let opciones = [];
+        for (const juego of juegos) {
+            if (!opciones.includes(juego.nombre)) {
+                opciones.push(juego.nombre);
+            }
+        }
+        //console.log(opciones);
+        return opciones;
+    }
+
+    document.getElementById('new-game').addEventListener("submit",function(event){
+        var nombre2 = document.getElementById("nombre-juego-nuevo").value;
+        console.log(nombre2);
+        const nuevoJuego = {
+            nombre: nombre2
+        };
+        console.log(nuevoJuego);
+
+        let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
+
+        // Verificar si juegos es un array
+        if (Array.isArray(juegos)) {
+            // Agregar el nuevo juego a la lista
+            juegos.push(nuevoJuego);
+
+            // Guardar la lista actualizada de juegos en el almacenamiento local
+            localStorage.setItem('nombre-juegos', JSON.stringify(juegos));
+        } else {
+            // Si no es un array, crear una nueva lista de juegos con el nuevo juego
+            juegos = [nuevoJuego];
+            localStorage.setItem('nombre-juegos', JSON.stringify(juegos));
+        }
+    });
 });

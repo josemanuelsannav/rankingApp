@@ -1,94 +1,94 @@
+let isSearching = false;
 document.addEventListener('DOMContentLoaded', function () {
     const listaJuegosContainer = document.getElementById('lista-juegos');
 
-    // Obtener la lista de juegos del almacenamiento local
-    const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
 
-    // Mostrar cada juego y los jugadores dentro de cada juego
-    juegos.forEach(function (juego) {
-        console.log(juego);
-        if (!juego.equipos) {
-
-            const juegoElement = document.createElement('div');
-            juegoElement.classList.add('juego');
-            juegoElement.innerHTML = `
-                <h2>${juego.nombre}</h2>
-                <div class="jugadores">
-                    ${juego.jugadores.map((jugador, index) => `
-                        <div class="jugador">
-                            <span>${index + 1}. ${jugador.nombre}</span> 
-                        </div>
-                    `).join('')}
+    function showAll(){
+        const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        juegos.forEach(function (juego) {
+            //console.log(juego);
+            if (!juego.equipos) {
+    
+                const juegoElement = document.createElement('div');
+                juegoElement.classList.add('juego');
+                juegoElement.innerHTML = `
+                    <h2>${juego.nombre}</h2>
+                    <div class="jugadores">
+                        ${juego.jugadores.map((jugador, index) => `
+                            <div class="jugador">
+                                <span>${index + 1}. ${jugador.nombre}</span> 
+                            </div>
+                        `).join('')}
+                    </div>
+                    <br>
+                    <button class="borrar-btn">Borrar</button>
+         
+    
+                `;
+                // Añadir evento de click al botón de borrar
+                const borrarBtn = juegoElement.querySelector('.borrar-btn');
+                borrarBtn.addEventListener('click', function () {
+                    // Mostrar ventana de confirmación
+                    const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
+    
+                    // Verificar si se ha confirmado la eliminación
+                    if (confirmacion) {
+                        // Eliminar el juegoElement del DOM
+                        juegoElement.remove();
+                        // Eliminar el juego de la lista de juegos
+                        const index = juegos.indexOf(juego);
+                        if (index !== -1) {
+                            borrarPuntuacionJuego(juego);
+                            juegos.splice(index, 1);
+                            localStorage.setItem('juegos', JSON.stringify(juegos));
+                        }
+                    }
+                });
+    
+                listaJuegosContainer.appendChild(juegoElement);
+            } else {
+    
+                const juegoElement = document.createElement('div');
+                juegoElement.classList.add('juego');
+                juegoElement.innerHTML = `
+                    <h2>${juego.nombre}</h2>
+                    <div class="equipos">
+                ${juego.equipos
+                        .sort((a, b) => a.posicion - b.posicion) // Ordenar por posición
+                        .map((equipo, index) => `
+                <div class="jugador">
+                    <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
+                    <span>${equipo.integrantes}</span>
+                </div>
+                 `)
+                        .join('')}
                 </div>
                 <br>
                 <button class="borrar-btn">Borrar</button>
-     
-
-            `;
-            // Añadir evento de click al botón de borrar
-            const borrarBtn = juegoElement.querySelector('.borrar-btn');
-            borrarBtn.addEventListener('click', function () {
-                // Mostrar ventana de confirmación
-                const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
-                
-                // Verificar si se ha confirmado la eliminación
-                if (confirmacion) {
-                    // Eliminar el juegoElement del DOM
-                    juegoElement.remove();
-                    // Eliminar el juego de la lista de juegos
-                    const index = juegos.indexOf(juego);
-                    if (index !== -1) {
-                        borrarPuntuacionJuego(juego);
-                        juegos.splice(index, 1);
-                        localStorage.setItem('juegos', JSON.stringify(juegos));
+                `;
+    
+                const borrarBtn = juegoElement.querySelector('.borrar-btn');
+                borrarBtn.addEventListener('click', function () {
+                    // Mostrar ventana de confirmación
+                    const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
+    
+                    // Verificar si se ha confirmado la eliminación
+                    if (confirmacion) {
+                        // Eliminar el juegoElement del DOM
+                        juegoElement.remove();
+                        // Eliminar el juego de la lista de juegos
+                        const index = juegos.indexOf(juego);
+                        if (index !== -1) {
+                            borrarPuntuacionJuegoEquipo(juego);
+                            juegos.splice(index, 1);
+                            localStorage.setItem('juegos', JSON.stringify(juegos));
+                        }
                     }
-                }
-            });
-            
-            listaJuegosContainer.appendChild(juegoElement);
-        } else {
-
-            const juegoElement = document.createElement('div');
-            juegoElement.classList.add('juego');
-            juegoElement.innerHTML = `
-                <h2>${juego.nombre}</h2>
-                <div class="equipos">
-            ${juego.equipos
-                    .sort((a, b) => a.posicion - b.posicion) // Ordenar por posición
-                    .map((equipo, index) => `
-            <div class="jugador">
-                <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
-                <span>${equipo.integrantes}</span>
-            </div>
-             `)
-                    .join('')}
-            </div>
-            <br>
-            <button class="borrar-btn">Borrar</button>
-            `;
-            
-            const borrarBtn = juegoElement.querySelector('.borrar-btn');
-            borrarBtn.addEventListener('click', function () {
-                // Mostrar ventana de confirmación
-                const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
-                
-                // Verificar si se ha confirmado la eliminación
-                if (confirmacion) {
-                    // Eliminar el juegoElement del DOM
-                    juegoElement.remove();
-                    // Eliminar el juego de la lista de juegos
-                    const index = juegos.indexOf(juego);
-                    if (index !== -1) {
-                        borrarPuntuacionJuegoEquipo(juego);
-                        juegos.splice(index, 1);
-                        localStorage.setItem('juegos', JSON.stringify(juegos));
-                    }
-                }
-            });
-            listaJuegosContainer.appendChild(juegoElement);
-        }
-    });
-
+                });
+                listaJuegosContainer.appendChild(juegoElement);
+            }
+        });
+    }
 
     function borrarPuntuacionJuego(juego) {
         // Obtener la lista de puntuaciones del almacenamiento local
@@ -99,29 +99,138 @@ document.addEventListener('DOMContentLoaded', function () {
                 jugadores[index].puntuacion -= jugador.puntuacion;
             }
         });
-        
+
 
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
     }
 
-    function borrarPuntuacionJuegoEquipo(juego){
+    function borrarPuntuacionJuegoEquipo(juego) {
         // Obtener la lista de puntuaciones del almacenamiento local
         const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
         juego.equipos.forEach(function (equipo) {
             equipo.integrantes.forEach(function (integrante) {
                 const index = jugadores.findIndex(j => j.nombre === integrante);
                 if (index !== -1) {
-                    if(!equipo.puntos || equipo.puntos==null){
-                        jugadores[index].puntuacion -= juego.equipos.length - equipo.posicion ;
-                    }else{
+                    if (!equipo.puntos || equipo.puntos == null) {
+                        jugadores[index].puntuacion -= juego.equipos.length - equipo.posicion;
+                    } else {
                         jugadores[index].puntuacion -= equipo.puntos;
                     }
-                    
+
                 }
             });
         });
-        
+
 
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
     }
+
+    document.getElementById('buscar').addEventListener('click', function () {
+        event.preventDefault();
+        isSearching = true;
+        var lista_juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        var nombre = document.getElementById("juego-busqueda").value;
+        console.log(nombre);
+        
+        var juegos_filtrados = lista_juegos.filter(function (juego) {
+            return juego.nombre.toLowerCase().includes(nombre.toLowerCase());
+        });
+
+        console.log(juegos_filtrados);
+        
+        while (listaJuegosContainer.firstChild) {
+            listaJuegosContainer.removeChild(listaJuegosContainer.firstChild);
+        }
+
+        juegos_filtrados.forEach(function (juego) {
+           // console.log(juego);
+            if (!juego.equipos) {
+
+                const juegoElement = document.createElement('div');
+                juegoElement.classList.add('juego');
+                juegoElement.innerHTML = `
+                    <h2>${juego.nombre}</h2>
+                    <div class="jugadores">
+                        ${juego.jugadores.map((jugador, index) => `
+                            <div class="jugador">
+                                <span>${index + 1}. ${jugador.nombre}</span> 
+                            </div>
+                        `).join('')}
+                    </div>
+                    <br>
+                    <button class="borrar-btn">Borrar</button>
+         
+    
+                `;
+                // Añadir evento de click al botón de borrar
+                const borrarBtn = juegoElement.querySelector('.borrar-btn');
+                borrarBtn.addEventListener('click', function () {
+                    // Mostrar ventana de confirmación
+                    const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
+
+                    // Verificar si se ha confirmado la eliminación
+                    if (confirmacion) {
+                        // Eliminar el juegoElement del DOM
+                        juegoElement.remove();
+                        // Eliminar el juego de la lista de juegos
+                        const index = juegos.indexOf(juego);
+                        if (index !== -1) {
+                            borrarPuntuacionJuego(juego);
+                            juegos.splice(index, 1);
+                            localStorage.setItem('juegos', JSON.stringify(juegos));
+                        }
+                    }
+                });
+
+                listaJuegosContainer.appendChild(juegoElement);
+            } else {
+
+                const juegoElement = document.createElement('div');
+                juegoElement.classList.add('juego');
+                juegoElement.innerHTML = `
+                    <h2>${juego.nombre}</h2>
+                    <div class="equipos">
+                ${juego.equipos
+                        .sort((a, b) => a.posicion - b.posicion) // Ordenar por posición
+                        .map((equipo, index) => `
+                <div class="jugador">
+                    <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
+                    <span>${equipo.integrantes}</span>
+                </div>
+                 `)
+                        .join('')}
+                </div>
+                <br>
+                <button class="borrar-btn">Borrar</button>
+                `;
+
+                const borrarBtn = juegoElement.querySelector('.borrar-btn');
+                borrarBtn.addEventListener('click', function () {
+                    // Mostrar ventana de confirmación
+                    const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
+
+                    // Verificar si se ha confirmado la eliminación
+                    if (confirmacion) {
+                        // Eliminar el juegoElement del DOM
+                        juegoElement.remove();
+                        // Eliminar el juego de la lista de juegos
+                        const index = juegos.indexOf(juego);
+                        if (index !== -1) {
+                            borrarPuntuacionJuegoEquipo(juego);
+                            juegos.splice(index, 1);
+                            localStorage.setItem('juegos', JSON.stringify(juegos));
+                        }
+                    }
+                });
+                listaJuegosContainer.appendChild(juegoElement);
+            }
+        });
+    });
+
+    function showGames(){
+        if(!isSearching){
+            showAll();
+        }
+    }
+    showGames();
 });

@@ -14,12 +14,21 @@
         <button onclick="window.location.href = '/ranking'">Volver al ranking</button>
     </header>
     <div class="container">
+        <h1>Crear Juego : </h1>
+        <form id="new-game">
+            <label for="nombre-juego-nuevo">Nombre del nuevo juego:</label>
+            <input type="text" id="nombre-juego-nuevo" name="nombre-juego" required>
+            <button type="submit">Guardar Juego</button>
+        </form>
+    </div>
+    <div class="container">
         <div class="container-content">
             <h1>Nuevo Juego</h1>
             <div class="form-container">
                 <form id="game-form">
                     <label for="nombre-juego">Nombre del Juego:</label>
-                    <input type="text" id="nombre-juego" name="nombre-juego" required>
+                  <span class="select-container-juego-normal"></span>
+                    <!--<input type="text" id="nombre-juego" name="nombre-juego" required>-->
                     <button type="submit">Guardar Juego</button>
                 </form>
             </div>
@@ -33,7 +42,9 @@
         <h1>Por equipos</h1>
         <div>
             <label for="nombre-juego-equipo">Nombre del Juego:</label>
-            <input type="text" id="nombre-juego-equipo" name="nombre-juego" required>
+            <!--<input type="text" id="nombre-juego-equipo" name="nombre-juego" required>-->
+            <span class="select-container-juego-equipo"></span>
+
         </div>
         <br>
         <div id="equipos-container">
@@ -51,7 +62,8 @@
         <div class="form-container">
             <form id="duelo-form">
                 <label for="nombre-duelo">Nombre del duelo:</label>
-                <input type="text" id="nombre-duelo" name="nombre-duelo" required>
+                <!--<input type="text" id="nombre-duelo" name="nombre-duelo" required>-->
+                <span class="select-container-juego-duelo"></span>
                 <button type="submit">Guardar duelo</button>
                 <br><br>
                 <label for="apuesta-duelo">Apuesta del duelo:</label>

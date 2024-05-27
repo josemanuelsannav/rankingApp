@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Juegos</title>
     <link rel="stylesheet" href="../styles/ver_juegos.css">
 </head>
+
 <body>
     <header class="header">
-    <h1>Lista de Juegos</h1>
-    <button onclick="window.location.href = '/ranking'">Volver al ranking</button>
-</header>
+        <h1>Lista de Juegos</h1>
+        <button onclick="window.location.href = '/ranking'">Volver al ranking</button>
+    </header>
+    <br>
+    <div class="container-buscar">
+        <form id="busqueda">
+            <label for="juego-busqueda">Buscar por juego:</label>
+            <input type="text" id="juego-busqueda" name="juego-busqueda" required>
+            <button id="buscar">Buscar</button>
+        </form>
+    </div>
     <div id="lista-juegos" class="container"></div>
 
     <script src="../scripts/ver_juegos.js"></script>
 </body>
+
 </html>

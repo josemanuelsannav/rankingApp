@@ -16,7 +16,10 @@
     color: #fff;
     border-bottom: 4px solid #fdb347;
   }
-  
+  .container-buscar {
+    padding: 16px;
+    
+  }
   .container {
     display: flex;
     flex-direction: row;
