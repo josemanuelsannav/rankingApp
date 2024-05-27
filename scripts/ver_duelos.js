@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     Perdedor: ${duelo.perdedor}
                     <br>
                     Apuesta: ${duelo.apuesta}
+                    <br>                    <br>
+
+                    ${formatearFecha(duelo.fecha)}
                 </div>
                 <br>
                 <button class="borrar-btn">Borrar</button>
@@ -68,7 +71,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
     }
+    function formatearFecha(fecha) {
+        console.log(fecha);
+        fecha = new Date(fecha);
 
+        let dia = String(fecha.getDate()).padStart(2, '0');
+        let mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript comienzan desde 0
+        let año = fecha.getFullYear();
+
+        let fechaFormateada = dia + '/' + mes + '/' + año;
+
+        return fechaFormateada;
+    }
     document.getElementById('buscar').addEventListener('click', function () {
         const jugador1 = document.getElementById('buscar-jugador1').value.trim();
         const jugador2 = document.getElementById('buscar-jugador2').value.trim();
@@ -126,6 +140,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         Perdedor: ${dueloResultado.duelo.perdedor}
                         <br>
                         Apuesta: ${dueloResultado.duelo.apuesta}
+                        <br><br>
+                        ${formatearFecha(dueloResultado.duelo.fecha)}
                     </div>
                     <br>
                     <button class="borrar-btn">Borrar</button>
@@ -166,6 +182,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         Perdedor: ${dueloResultado.duelo.perdedor}
                         <br>
                         Apuesta: ${dueloResultado.duelo.apuesta}
+                        <br><br>
+
+                        ${formatearFecha(dueloResultado.duelo.fecha)}
                     </div>
                     <br>
                     <button class="borrar-btn">Borrar</button>

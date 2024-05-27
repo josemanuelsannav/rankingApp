@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const listaJuegosContainer = document.getElementById('lista-juegos');
 
 
-    function showAll(){
+    function showAll() {
         const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
         juegos.forEach(function (juego) {
             //console.log(juego);
             if (!juego.equipos) {
-    
+
                 const juegoElement = document.createElement('div');
                 juegoElement.classList.add('juego');
                 juegoElement.innerHTML = `
@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         `).join('')}
                     </div>
                     <br>
+                    <label for="fecha">${formatearFecha(juego.fecha)}</label>
+                    <br><br>
                     <button class="borrar-btn">Borrar</button>
          
     
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 borrarBtn.addEventListener('click', function () {
                     // Mostrar ventana de confirmación
                     const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
-    
+
                     // Verificar si se ha confirmado la eliminación
                     if (confirmacion) {
                         // Eliminar el juegoElement del DOM
@@ -44,10 +46,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }
                 });
-    
+
                 listaJuegosContainer.appendChild(juegoElement);
             } else {
-    
+
                 const juegoElement = document.createElement('div');
                 juegoElement.classList.add('juego');
                 juegoElement.innerHTML = `
@@ -60,18 +62,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
                     <span>${equipo.integrantes}</span>
                 </div>
+                
                  `)
                         .join('')}
                 </div>
                 <br>
+                <label for="fecha">${formatearFecha(juego.fecha)}</label>
+                <br>
+                <br>
                 <button class="borrar-btn">Borrar</button>
                 `;
-    
+
                 const borrarBtn = juegoElement.querySelector('.borrar-btn');
                 borrarBtn.addEventListener('click', function () {
                     // Mostrar ventana de confirmación
                     const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
-    
+
                     // Verificar si se ha confirmado la eliminación
                     if (confirmacion) {
                         // Eliminar el juegoElement del DOM
@@ -88,6 +94,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 listaJuegosContainer.appendChild(juegoElement);
             }
         });
+    }
+
+    function formatearFecha(fecha) {
+        console.log(fecha);
+        fecha = new Date(fecha);
+
+        let dia = String(fecha.getDate()).padStart(2, '0');
+        let mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript comienzan desde 0
+        let año = fecha.getFullYear();
+
+        let fechaFormateada = dia + '/' + mes + '/' + año;
+
+        return fechaFormateada;
     }
 
     function borrarPuntuacionJuego(juego) {
@@ -131,19 +150,19 @@ document.addEventListener('DOMContentLoaded', function () {
         var lista_juegos = JSON.parse(localStorage.getItem('juegos')) || [];
         var nombre = document.getElementById("juego-busqueda").value;
         console.log(nombre);
-        
+
         var juegos_filtrados = lista_juegos.filter(function (juego) {
             return juego.nombre.toLowerCase().includes(nombre.toLowerCase());
         });
 
         console.log(juegos_filtrados);
-        
+
         while (listaJuegosContainer.firstChild) {
             listaJuegosContainer.removeChild(listaJuegosContainer.firstChild);
         }
 
         juegos_filtrados.forEach(function (juego) {
-           // console.log(juego);
+            // console.log(juego);
             if (!juego.equipos) {
 
                 const juegoElement = document.createElement('div');
@@ -158,6 +177,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         `).join('')}
                     </div>
                     <br>
+                    <label for="fecha">${formatearFecha(juego.fecha)}</label>
+                    <br><br>
                     <button class="borrar-btn">Borrar</button>
          
     
@@ -201,6 +222,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         .join('')}
                 </div>
                 <br>
+                <label for="fecha">${formatearFecha(juego.fecha)}</label>
+                <br>
                 <button class="borrar-btn">Borrar</button>
                 `;
 
@@ -227,8 +250,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    function showGames(){
-        if(!isSearching){
+    function showGames() {
+        if (!isSearching) {
             showAll();
         }
     }

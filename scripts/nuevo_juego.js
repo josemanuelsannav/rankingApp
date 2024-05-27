@@ -110,7 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function guardarJuegoEnLocalStorage() {
         const nuevoJuego = {
             nombre: document.getElementById('miSelectId-juego-normal').value,
-            jugadores: jugadoresDeJuego
+            jugadores: jugadoresDeJuego,
+            fecha: new Date()
         };
         console.log(nuevoJuego);
 
@@ -220,7 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Crear objeto con los datos del juego
             const juego = {
                 nombre: nombreJuego,
-                equipos: equipos
+                equipos: equipos,
+                fecha: new Date()
             };
 
 
@@ -278,9 +280,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
-
+        let fechaActual = new Date();
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        duelos.push({ nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor });
+        duelos.push({ nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor,fecha: fechaActual});
         localStorage.setItem('duelos', JSON.stringify(duelos));
         alert('Puntuaciones actualizadas y duelo guardado con éxito.');
         window.location.href = '/ranking';
