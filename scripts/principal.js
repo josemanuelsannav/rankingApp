@@ -99,7 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Almacenar los datos de jugadores y juegos en el localStorage
                     almacenarDatosEnLocalStorage(jsonData.jugadores, 'jugadores');
                     almacenarDatosEnLocalStorage(jsonData.juegos, 'juegos');
-                    almacenarDatosEnLocalStorage(jsonData.juegos, 'nombre-juegos');
+                    almacenarDatosEnLocalStorage(jsonData.nombre-juegos, 'nombre-juegos');
+                    almacenarDatosEnLocalStorage(jsonData.duelos, 'duelos');
                     window.location.reload();
                 } catch (error) {
                     console.error('Error al parsear el archivo JSON:', error);
