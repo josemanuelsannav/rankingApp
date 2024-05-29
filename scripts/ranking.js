@@ -275,9 +275,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         });
-        const titulo2 = document.createElement('h1');
+        /////////////////////////////////////
+        //Segunda grafica de duelos general
+        ////////////////////////////////////
+       /* const titulo2 = document.createElement('h1');
         titulo2.textContent = "Duelos";
-        modalContenido.appendChild(titulo2);
+        modalContenido.appendChild(titulo2);*/
 
         // Crear lienzo para la gráfica
         const canvas2 = document.createElement('canvas');
@@ -312,13 +315,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var maximo = duelosJugados; // Utilizar el número total de partidas jugadas como máximo
         var valores = posiciones2;//[primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
         var porcentajes = valores.map(valor => (valor / maximo) * 100);
-        console.log(valores, porcentajes);
-        console.log(maximo);
+       
         // Crear la gráfica de barras
-        var grafica = new Chart(ctx, {
+      /*  var grafica = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: nombre_posiciones2,//['Primera posición', 'Segunda posición', 'Tercera posición', 'Cuarta posición'],
+                labels: nombre_posiciones2,
                 datasets: [{
                     label: 'Duelos jugados: ' + duelosJugados,
                     data: valores,
@@ -338,7 +340,105 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-        });
+        });*/
+
+        ////////////////////////////
+        //Tercera Grafica 
+        ////////////////////////////
+
+        const canvas3 = document.createElement('canvas');
+        const titulo3 = document.createElement('h1');
+        titulo3.textContent = "Duelos personas";
+        modalContenido.appendChild(titulo3);
+        
+        canvas3.id = 'grafica';
+        modalContenido.appendChild(canvas3);
+
+        let contrincantes = [];
+        /*const contrincante = {
+            nombre : 
+            ganadas://contra el
+            perdidas://cntra el
+        }*/
+        
+        // Graficar las estadísticas
+        let duelos_ganados2=0;
+        //creamos los contrincantes 
+        for(const duelo of duelos){
+            if(duelo.ganador == jugador.nombre || duelo.perdedor == jugador.nombre){
+                duelos_ganados2++;
+                if(duelo.ganador == jugador.nombre){
+                    let personaEncontrada = contrincantes.find(persona => persona.nombre === duelo.perdedor);
+                    if(personaEncontrada){
+                        personaEncontrada.ganadas++;
+                    }else{
+                        const contrincante={
+                            nombre: duelo.perdedor,
+                            ganadas: 1,
+                            perdidas: 0
+                        }
+                        contrincantes.push(contrincante);
+                    }
+                }else{
+                    let personaEncontrada = contrincantes.find(persona => persona.nombre === duelo.ganador);
+                    if(personaEncontrada){
+                        personaEncontrada.perdidas++;
+                    }else{
+                        const contrincante={
+                            nombre: duelo.ganador,
+                            ganadas: 0,
+                            perdidas: 1
+                        }
+                        contrincantes.push(contrincante);
+                    }
+                }
+            }
+        }
+
+        let nombres_contrincantes = contrincantes.map(persona => persona.nombre);
+        let ganadas = contrincantes.map(persona => persona.ganadas);
+        let perdidas = contrincantes.map(persona => persona.perdidas);
+        console.log(nombres_contrincantes);
+
+        modal.appendChild(modalContenido);
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
+
+        // Configurar la gráfica
+        var ctx = canvas3.getContext('2d');
+        var maximo = duelos_ganados2; // Utilizar el número total de partidas jugadas como máximo
+        var valores = posiciones2;//[primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
+        var porcentajes = valores.map(valor => (valor / maximo) * 100);
+        var grafica = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: nombres_contrincantes, //nombres de las personas con las que hay duelo
+              datasets: [{
+                label: 'Duelos ganados: ' + ganadas.reduce((acumulador, win) => acumulador + win, 0),
+                data: ganadas,
+                backgroundColor: ['rgba(75, 192, 192, 0.5)'],
+                borderColor: ['rgba(75, 192, 192, 1)'],
+                borderWidth: 1
+              }, {
+                label: "Duelos perdidos: "+ perdidas.reduce((acumulador, win) => acumulador + win, 0), // etiqueta para la segunda barra
+                data: perdidas, // valores para la segunda barra
+                backgroundColor: ['rgba(255, 99, 132, 0.5)'],
+                borderColor: ['rgba(255, 99, 132, 0.5)'],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true, // o false, dependiendo de tus necesidades
+                    max: 100 // o cualquier otro valor máximo válido
+                  }
+                }]
+              }
+            }
+          });
+          
     }
 
 
