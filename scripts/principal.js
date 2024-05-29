@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     upload_dataButton.addEventListener("click", function () {
+        localStorage.clear();
         const fileInput = document.getElementById('fileInput');
         console.log(fileInput.files);
         // Verificar si se ha seleccionado un archivo

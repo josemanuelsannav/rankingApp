@@ -1,12 +1,12 @@
 let isSearching = false;
 document.addEventListener('DOMContentLoaded', function () {
     const listaJuegosContainer = document.getElementById('lista-juegos');
-
+    let juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+    juegos= [...juegos].slice().reverse();
 
     function showAll() {
-        const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        console.log("Funcion. ",juegos);
         juegos.forEach(function (juego) {
-            //console.log(juego);
             if (!juego.equipos) {
 
                 const juegoElement = document.createElement('div');
@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function formatearFecha(fecha) {
-        console.log(fecha);
         fecha = new Date(fecha);
 
         let dia = String(fecha.getDate()).padStart(2, '0');
@@ -149,20 +148,17 @@ document.addEventListener('DOMContentLoaded', function () {
         isSearching = true;
         var lista_juegos = JSON.parse(localStorage.getItem('juegos')) || [];
         var nombre = document.getElementById("juego-busqueda").value;
-        console.log(nombre);
 
         var juegos_filtrados = lista_juegos.filter(function (juego) {
             return juego.nombre.toLowerCase().includes(nombre.toLowerCase());
         });
 
-        console.log(juegos_filtrados);
 
         while (listaJuegosContainer.firstChild) {
             listaJuegosContainer.removeChild(listaJuegosContainer.firstChild);
         }
 
         juegos_filtrados.forEach(function (juego) {
-            // console.log(juego);
             if (!juego.equipos) {
 
                 const juegoElement = document.createElement('div');
@@ -250,10 +246,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    document.getElementById("mas_reciente").addEventListener('click',function(){
+        juegos = [...juegos].slice().reverse();
+        console.log(juegos);
+        while (listaJuegosContainer.firstChild) {
+            listaJuegosContainer.removeChild(listaJuegosContainer.firstChild);
+        }
+        showGames();
+    });
+
     function showGames() {
         if (!isSearching) {
             showAll();
         }
     }
+
     showGames();
 });
