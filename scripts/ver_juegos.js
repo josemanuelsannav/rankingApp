@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const listaJuegosContainer = document.getElementById('lista-juegos');
     let juegos = JSON.parse(localStorage.getItem('juegos')) || [];
     juegos = [...juegos].slice().reverse();
+    
 
     function showAll() {
         //console.log("Funcion. ", juegos);

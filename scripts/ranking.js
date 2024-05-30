@@ -3,11 +3,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const verJuegoBtn = document.getElementById('ver-juegos-btn');
     const downloadDataBtn = document.getElementById("download");
     const dueloBtn = document.getElementById("ver-duelos-btn");
-    const modal = document.getElementById('modal');
-    const infoUsuario = document.getElementById('informacion-usuario');
-    const cerrarModal = document.querySelector('.cerrar-modal');
+    
+    
+    function confeti (){
+        
+        let canvas = document.createElement("canvas");
+            let container = document.getElementsByClassName("jss1040")[0];
+            canvas.width = 600;
+            canvas.height = 600;
+
+            container.appendChild(canvas);
+
+            let confetti_button = confetti.create(canvas);
+            confetti_button().then(() => container.removeChild(canvas));
+    }
+    
 
     dueloBtn.addEventListener('click', function () {
+        
         window.location.href = '/ver_duelos';
     });
 
@@ -184,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
     mostrarJugadores(jugadoresGuardados);
-
+    confeti();
 
     function abrirModal(jugador) {
         const modal = document.createElement('div');
