@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const duelos = JSON.parse(localStorage.getItem('duelos'));
             const nombre_juegos = JSON.parse(localStorage.getItem('nombre-juegos'));
             // Combinar los datos en un objeto JSON
-            const datosJSON = { jugadores, juegos, duelos, nombre_juegos};
+            const datosJSON = { jugadores, juegos, duelos, nombre_juegos };
 
             // Convertir el objeto JSON a una cadena JSON
             const jsonString = JSON.stringify(datosJSON, null, 2);
@@ -114,14 +114,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
-        
+
         document.getElementById('segundo').innerText = jugadores[1].nombre;
         winrate = parseFloat(calcularWinrate(jugadores[1]).toFixed(2));
         document.getElementById('puntos-segundo').innerText = jugadores[1].puntuacion + " pts.   Wr: " + winrate + "%";
         const imagen2 = document.createElement('img');
         imagen2.src = jugadores[1].foto;
         document.getElementById("foto-segundo").appendChild(imagen2);
-        
+
         imagen2.addEventListener('click', () => {
             abrirModal(jugadores[1]);
         });
@@ -248,8 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var maximo = partidas_jugadas; // Utilizar el número total de partidas jugadas como máximo
         var valores = posiciones;//[primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
         var porcentajes = valores.map(valor => (valor / maximo) * 100);
-        console.log(valores, porcentajes);
-        console.log(maximo);
+
         // Crear la gráfica de barras
         var grafica = new Chart(ctx, {
             type: 'bar',
@@ -278,9 +277,9 @@ document.addEventListener('DOMContentLoaded', function () {
         /////////////////////////////////////
         //Segunda grafica de duelos general
         ////////////////////////////////////
-       /* const titulo2 = document.createElement('h1');
-        titulo2.textContent = "Duelos";
-        modalContenido.appendChild(titulo2);*/
+        /* const titulo2 = document.createElement('h1');
+         titulo2.textContent = "Duelos";
+         modalContenido.appendChild(titulo2);*/
 
         // Crear lienzo para la gráfica
         const canvas2 = document.createElement('canvas');
@@ -292,16 +291,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         //const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
         let posiciones2 = new Array(2).fill(0);
-        let nombre_posiciones2 = ["Ganador", "Perdedor"]; 
-        
+        let nombre_posiciones2 = ["Ganador", "Perdedor"];
+
 
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        for(const duelo of duelos){
-            if(duelo.ganador == jugador.nombre || duelo.perdedor == jugador.nombre){
+        for (const duelo of duelos) {
+            if (duelo.ganador == jugador.nombre || duelo.perdedor == jugador.nombre) {
                 duelosJugados++;
-                if(duelo.ganador == jugador.nombre){
+                if (duelo.ganador == jugador.nombre) {
                     posiciones2[0]++;
-                }else{
+                } else {
                     posiciones2[1]++;
                 }
             }
@@ -315,32 +314,32 @@ document.addEventListener('DOMContentLoaded', function () {
         var maximo = duelosJugados; // Utilizar el número total de partidas jugadas como máximo
         var valores = posiciones2;//[primera_posicion, segunda_posicion, tercera_posicion, cuarta_posicion];
         var porcentajes = valores.map(valor => (valor / maximo) * 100);
-       
-        // Crear la gráfica de barras
-      /*  var grafica = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: nombre_posiciones2,
-                datasets: [{
-                    label: 'Duelos jugados: ' + duelosJugados,
-                    data: valores,
-                    backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
-                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],        
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true, // o false, dependiendo de tus necesidades
-                            max: 100 // o cualquier otro valor máximo válido
-                        }
-                    }]
-                }
-            }
 
-        });*/
+        // Crear la gráfica de barras
+        /*  var grafica = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: nombre_posiciones2,
+                  datasets: [{
+                      label: 'Duelos jugados: ' + duelosJugados,
+                      data: valores,
+                      backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                      borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],        
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true, // o false, dependiendo de tus necesidades
+                              max: 100 // o cualquier otro valor máximo válido
+                          }
+                      }]
+                  }
+              }
+  
+          });*/
 
         ////////////////////////////
         //Tercera Grafica 
@@ -350,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const titulo3 = document.createElement('h1');
         titulo3.textContent = "Duelos personas";
         modalContenido.appendChild(titulo3);
-        
+
         canvas3.id = 'grafica';
         modalContenido.appendChild(canvas3);
 
@@ -360,31 +359,31 @@ document.addEventListener('DOMContentLoaded', function () {
             ganadas://contra el
             perdidas://cntra el
         }*/
-        
+
         // Graficar las estadísticas
-        let duelos_ganados2=0;
+        let duelos_ganados2 = 0;
         //creamos los contrincantes 
-        for(const duelo of duelos){
-            if(duelo.ganador == jugador.nombre || duelo.perdedor == jugador.nombre){
+        for (const duelo of duelos) {
+            if (duelo.ganador == jugador.nombre || duelo.perdedor == jugador.nombre) {
                 duelos_ganados2++;
-                if(duelo.ganador == jugador.nombre){
+                if (duelo.ganador == jugador.nombre) {
                     let personaEncontrada = contrincantes.find(persona => persona.nombre === duelo.perdedor);
-                    if(personaEncontrada){
+                    if (personaEncontrada) {
                         personaEncontrada.ganadas++;
-                    }else{
-                        const contrincante={
+                    } else {
+                        const contrincante = {
                             nombre: duelo.perdedor,
                             ganadas: 1,
                             perdidas: 0
                         }
                         contrincantes.push(contrincante);
                     }
-                }else{
+                } else {
                     let personaEncontrada = contrincantes.find(persona => persona.nombre === duelo.ganador);
-                    if(personaEncontrada){
+                    if (personaEncontrada) {
                         personaEncontrada.perdidas++;
-                    }else{
-                        const contrincante={
+                    } else {
+                        const contrincante = {
                             nombre: duelo.ganador,
                             ganadas: 0,
                             perdidas: 1
@@ -412,33 +411,33 @@ document.addEventListener('DOMContentLoaded', function () {
         var grafica = new Chart(ctx, {
             type: 'bar',
             data: {
-              labels: nombres_contrincantes, //nombres de las personas con las que hay duelo
-              datasets: [{
-                label: 'Duelos ganados: ' + ganadas.reduce((acumulador, win) => acumulador + win, 0),
-                data: ganadas,
-                backgroundColor: ['rgba(75, 192, 192, 0.5)'],
-                borderColor: ['rgba(75, 192, 192, 1)'],
-                borderWidth: 1
-              }, {
-                label: "Duelos perdidos: "+ perdidas.reduce((acumulador, win) => acumulador + win, 0), // etiqueta para la segunda barra
-                data: perdidas, // valores para la segunda barra
-                backgroundColor: ['rgba(255, 99, 132, 0.5)'],
-                borderColor: ['rgba(255, 99, 132, 0.5)'],
-                borderWidth: 1
-              }]
+                labels: nombres_contrincantes, //nombres de las personas con las que hay duelo
+                datasets: [{
+                    label: 'Duelos ganados: ' + ganadas.reduce((acumulador, win) => acumulador + win, 0),
+                    data: ganadas,
+                    backgroundColor: ['rgba(75, 192, 192, 0.5)'],
+                    borderColor: ['rgba(75, 192, 192, 1)'],
+                    borderWidth: 1
+                }, {
+                    label: "Duelos perdidos: " + perdidas.reduce((acumulador, win) => acumulador + win, 0), // etiqueta para la segunda barra
+                    data: perdidas, // valores para la segunda barra
+                    backgroundColor: ['rgba(255, 99, 132, 0.5)'],
+                    borderColor: ['rgba(255, 99, 132, 0.5)'],
+                    borderWidth: 1
+                }]
             },
             options: {
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true, // o false, dependiendo de tus necesidades
-                    max: 100 // o cualquier otro valor máximo válido
-                  }
-                }]
-              }
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true, // o false, dependiendo de tus necesidades
+                            max: 100 // o cualquier otro valor máximo válido
+                        }
+                    }]
+                }
             }
-          });
-          
+        });
+
     }
 
 
