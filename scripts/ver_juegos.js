@@ -238,7 +238,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     for (const equipo of partida.equipos) {
                         for (const jugador of equipo.integrantes) {
                             const player = lista_jugadores.find(j => j.nombre === jugador);
-                            if (!player) {
+                            const partidasAux = JSON.parse(localStorage.getItem('jugadores')) || [];
+                            const player2 = partidasAux.find(j=> j.nombre === jugador);
+
+                            if (!player && player2) {
                                 let jugador2 = null;
                                 if (!equipo.puntos) {
                                     jugador2 = {
@@ -254,9 +257,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                 lista_jugadores.push(jugador2);
 
-                            } else {
+                            } else if(player2) {
                                 if (!equipo.puntos) {
-                                    player.puntuacion = player.puntuacion + parseInt(partidas.equipos.length - equipo.posicion);
+                                    debugger;
+                                    player.puntuacion = player.puntuacion + parseInt(partida.equipos.length - equipo.posicion);
                                 } else {
                                     player.puntuacion = player.puntuacion + parseInt(equipo.puntos);
                                 }
