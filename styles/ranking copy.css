@@ -393,3 +393,8 @@ h6 {
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
+
+  #graficaHistorico {
+    width: 100% !important;
+    height: 400px !important; /* Ajuste la altura según sea necesario */
+}

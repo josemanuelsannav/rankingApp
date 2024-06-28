@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let jugadoresDeJuego = [];
 
-    function actualizarPuntuacion() {
+    function actualizarPuntuacion() {//creo que esto ya no hace falta tenerlo aqui
         // Obtener los jugadores del almacenamiento local
         const jugadoresAlmacenados = JSON.parse(localStorage.getItem('jugadores')) || [];
         const cantidadJugadores = jugadoresAlmacenados.length;
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (checkbox && !checkbox.checked) {
                 const jugadorAlmacenado = jugadoresAlmacenados.find(j => j.nombre === jugador.nombre);
                 let x = cantidadJugadores - numeroCheckboxMarcados - index - 1;
-                console.log(x);
+
                 const newJugador = { nombre: jugador.nombre, puntuacion: x, foto: jugador.foto };
                 jugadoresDeJuego.push(newJugador);
                 if (jugadorAlmacenado) {
@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
-        console.log(jugadoresDeJuego);
     }
 
     function guardarJugadoresEnLocalStorage() {
@@ -113,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
             jugadores: jugadoresDeJuego,
             fecha: new Date()
         };
-        console.log(nuevoJuego);
 
         let juegos = JSON.parse(localStorage.getItem('juegos')) || [];
 
@@ -129,14 +127,41 @@ document.addEventListener('DOMContentLoaded', function () {
             juegos = [nuevoJuego];
             localStorage.setItem('juegos', JSON.stringify(juegos));
         }
+        actualizarListaHistorico();
     }
 
+    function actualizarListaHistorico() {
+        const historico = JSON.parse(localStorage.getItem("historico")) || [];
+        console.log(historico);
+        if (historico == null || historico == undefined || historico == "") {
+            localStorage.setItem('historico', JSON.stringify(historico));
+            const dato = {
+                fecha: new Date(),
+                jugadores: JSON.parse(localStorage.getItem('jugadores')).sort((a, b) => b.puntuacion - a.puntuacion)
+            }
+            historico.push(dato);
+            localStorage.setItem('historico', JSON.stringify(historico));
+        } else {
+            console.log("entro");
+
+            const dato = {
+                fecha: new Date(),
+                jugadores: JSON.parse(localStorage.getItem('jugadores')).sort((a, b) => b.puntuacion - a.puntuacion)
+            }
+            console.log(dato);
+            historico.push(dato);
+            localStorage.setItem('historico', JSON.stringify(historico));
+
+
+        }
+    }
 
     gameForm.addEventListener('submit', function (event) {
-        event.preventDefault();
+     debugger;    event.preventDefault();
         actualizarPuntuacion();
         guardarJugadoresEnLocalStorage();
         guardarJuegoEnLocalStorage();
+       
         alert('Puntuaciones actualizadas y juego guardado con éxito.');
         window.location.href = '/ranking';
     });
@@ -238,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
-    function añadirPuntos(juego) {
+    function añadirPuntos(juego) {//esto creo que no hace falta
         //jugadores
         for (const equipo of juego.equipos) {
             for (const integrante of equipo.integrantes) {
@@ -267,10 +292,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var perdedor = document.getElementById('Perdedor').value.trim();
 
         // Ahora puedes usar los valores obtenidos
-        //console.log(nombreDuelo, apuesta, jugador1, jugador2);
         const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
 
-        for (const jugador of jugadores) {
+        for (const jugador of jugadores) {//esto creo que no hace falta
 
             if (jugador.nombre === ganador) {
                 jugador.puntuacion = jugador.puntuacion + parseInt(apuesta);
@@ -282,8 +306,9 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
         let fechaActual = new Date();
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        duelos.push({ nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor,fecha: fechaActual});
+        duelos.push({ nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor, fecha: fechaActual });
         localStorage.setItem('duelos', JSON.stringify(duelos));
+        actualizarListaHistorico();
         alert('Puntuaciones actualizadas y duelo guardado con éxito.');
         window.location.href = '/ranking';
     });
@@ -294,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
         //Desplegable de los nombres y tal
         let selectContainer = document.querySelector(".select-container-juego-normal");
         let selectElement = document.createElement("select");
-        let opciones =obtenerJuegos();
+        let opciones = obtenerJuegos();
         ;
         opciones.forEach((opcion) => {
             let optionElement = document.createElement("option");
@@ -333,24 +358,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function obtenerJuegos() {
         let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
-        //console.log(juegos);
         let opciones = [];
         for (const juego of juegos) {
             if (!opciones.includes(juego.nombre)) {
                 opciones.push(juego.nombre);
             }
         }
-        //console.log(opciones);
+        opciones.sort();
         return opciones;
     }
 
-    document.getElementById('new-game').addEventListener("submit",function(event){
+    document.getElementById('new-game').addEventListener("submit", function (event) {
         var nombre2 = document.getElementById("nombre-juego-nuevo").value;
-        console.log(nombre2);
         const nuevoJuego = {
             nombre: nombre2
         };
-        console.log(nuevoJuego);
 
         let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
 

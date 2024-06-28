@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showAll() {
         //console.log("Funcion. ", juegos);
+        juegos.sort((a, b) => {
+            // Convertir las fechas a objetos Date para comparar
+            const fechaA = new Date(a.fecha);
+            const fechaB = new Date(b.fecha);
+            return fechaB- fechaA; // Para orden ascendente, invierte para descendente
+        });
         juegos.forEach(function (juego) {
             if (!juego.equipos) {
 
@@ -242,12 +248,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             const partidasAux = JSON.parse(localStorage.getItem('jugadores')) || [];
                             const player2 = partidasAux.find(j=> j.nombre === jugador);
 
-                            if (!player && player2) {
+                            if (!player && player2) { //si el jugador no esta metido en el array de la grafica pero existe en la BD
                                 let jugador2 = null;
                                 if (!equipo.puntos) {
                                     jugador2 = {
                                         nombre: jugador,
-                                        puntuacion: partida.equipos.length - equipo.posicion
+                                        puntuacion: parseInt(partida.equipos.length) - parseInt(equipo.posicion)
                                     };
                                 } else {
                                     jugador2 = {
@@ -261,9 +267,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             } else if(player2) {
                                 if (!equipo.puntos) {
                                     debugger;
-                                    player.puntuacion = player.puntuacion + parseInt(partida.equipos.length - equipo.posicion);
+                                    player.puntuacion = parseInt(player.puntuacion) + parseInt(partida.equipos.length - equipo.posicion);
                                 } else {
-                                    player.puntuacion = player.puntuacion + parseInt(equipo.puntos);
+                                    player.puntuacion = parseInt(player.puntuacion) + parseInt(equipo.puntos);
                                 }
 
                             }

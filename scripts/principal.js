@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     almacenarDatosEnLocalStorage(jsonData.juegos, 'juegos');
                     almacenarDatosEnLocalStorage(jsonData.nombre_juegos, 'nombre-juegos');
                     almacenarDatosEnLocalStorage(jsonData.duelos, 'duelos');
+                    almacenarDatosEnLocalStorage(jsonData.historico, 'historico');
                     window.location.reload();
                 } catch (error) {
                     console.error('Error al parsear el archivo JSON:', error);
@@ -114,9 +115,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('No se ha seleccionado ningún archivo.');
         }
     });
-
-    // Función para cargar un archivo JSON desde el dispositivo y almacenar sus datos en localStorage
-
 
     // Función para almacenar datos JSON en el localStorage
     function almacenarDatosEnLocalStorage(jsonData, key) {
@@ -137,5 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
         upload_dataButton.classList.add('btn-success'); // Agregar la clase "btn-success" al botón
         upload_dataButton.classList.remove('btn-secondary'); // Remover la clase "btn-secondary" del botón  
     });
+    
 });
 

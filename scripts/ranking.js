@@ -3,24 +3,151 @@ document.addEventListener('DOMContentLoaded', function () {
     const verJuegoBtn = document.getElementById('ver-juegos-btn');
     const downloadDataBtn = document.getElementById("download");
     const dueloBtn = document.getElementById("ver-duelos-btn");
-    
-    
-    function confeti (){
-        
+    const historicoPosiciones = document.getElementById("historico-posiciones");
+
+    function confeti() {
+
         let canvas = document.createElement("canvas");
-            let container = document.getElementsByClassName("jss1040")[0];
-            canvas.width = 600;
-            canvas.height = 600;
+        let container = document.getElementsByClassName("jss1040")[0];
+        canvas.width = 600;
+        canvas.height = 600;
 
-            container.appendChild(canvas);
+        container.appendChild(canvas);
 
-            let confetti_button = confetti.create(canvas);
-            confetti_button().then(() => container.removeChild(canvas));
+        let confetti_button = confetti.create(canvas);
+        confetti_button().then(() => container.removeChild(canvas));
     }
+
+    function formatearFecha(fecha) {
+        fecha = new Date(fecha);
+
+        let dia = String(fecha.getDate()).padStart(2, '0');
+        let mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript comienzan desde 0
+        let año = fecha.getFullYear();
+
+        let fechaFormateada = dia + '/' + mes + '/' + año;
+
+        return fechaFormateada;
+    }
+
+    historicoPosiciones.addEventListener('click', function () {
+        console.log(historicoPosicionesArray);
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+        const modalContenido = document.createElement('div');
+        modalContenido.classList.add('modal-contenido');
+        const titulo = document.createElement('h1');
+
+        titulo.textContent = "Evolucion Ranking";
+
+        const cerrarModal = document.createElement('a');
+        cerrarModal.classList.add('cerrar-modal');
+        cerrarModal.innerHTML = '&times;'; // Usar una "x" para representar el botón de cierre
+        cerrarModal.addEventListener('click', () => {
+            modal.remove();
+        });
+        modalContenido.appendChild(cerrarModal);
+        modalContenido.appendChild(titulo);
+
+        // Crear lienzo para la gráfica
+        const canvas = document.createElement('canvas');
+        canvas.id = 'graficaHistorico';
+        modalContenido.appendChild(canvas);
+
+
+
+        modal.appendChild(modalContenido);
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
+
+        const nombres_jugadores = jugadoresGuardados.map(jugador => jugador.nombre);
+        const dias = historicoPosicionesArray.map(historico => formatearFecha(historico.fecha));
+
+        const datos = [];
+        for (const nombre of nombres_jugadores) {
+            const posiciones = [];
+
+            for (const dia of historicoPosicionesArray) {
+                // Buscar el índice del jugador por nombre en la lista de jugadores del día
+                let indice = dia.jugadores.findIndex(jugador => jugador.nombre === nombre);
+                // Si el jugador no se encuentra, findIndex devuelve -1
+                indice = indice + 1;
+                posiciones.push(indice);
+
+            }
+
+            datos.push({
+                nombre: nombre,
+                posiciones: posiciones
+            });
+        }
+       
+
+        // Configurar la gráfica
+        var ctx = canvas.getContext('2d');
+
+        // Crear la gráfica de barras
+        var grafica = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dias,
+                datasets: datos.map((persona,index) => ({
+                    label: persona.nombre,
+                    data: persona.posiciones,
+                    borderColor:coloresPredefinidos[index % coloresPredefinidos.length], //getRandomColor(),
+                    fill: false
+                }))
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Días'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Posiciones'
+                        },
+                        beginAtZero: true,reverse:true
+                    }
+                }
+            }
+
+        });
+
+    });
     
+    const coloresPredefinidos = [
+        '#FF0000', // Rojo
+        '#00FF00', // Verde
+        '#0000FF', // Azul
+        '#FFFF00', // Amarillo
+        '#FF00FF', // Magenta
+        '#00FFFF', // Cian
+        '#800000', // Marrón
+        '#808000', // Oliva
+        '#008080', // Verde azulado
+        '#800080'  // Púrpura
+    ];
+
+    /* Cuando tengamos mas de 10 personas
+    let usedColors = [];
+
+    function getRandomColor() {
+        let color;
+        do {
+            color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        } while (usedColors.includes(color));
+        usedColors.push(color);
+        return color;
+    }*/
 
     dueloBtn.addEventListener('click', function () {
-        
+
         window.location.href = '/ver_duelos';
     });
 
@@ -41,8 +168,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const juegos = JSON.parse(localStorage.getItem('juegos'));
             const duelos = JSON.parse(localStorage.getItem('duelos'));
             const nombre_juegos = JSON.parse(localStorage.getItem('nombre-juegos'));
+            const historico = JSON.parse(localStorage.getItem('historico'));
             // Combinar los datos en un objeto JSON
-            const datosJSON = { jugadores, juegos, duelos, nombre_juegos };
+            const datosJSON = { jugadores, juegos, duelos, nombre_juegos,historico };
 
             // Convertir el objeto JSON a una cadena JSON
             const jsonString = JSON.stringify(datosJSON, null, 2);
@@ -60,8 +188,48 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    function calcularPuntuacionJugadores(jugadores) {
+        const juegos = JSON.parse(localStorage.getItem("juegos")) || [];
+
+        for (const jugador of jugadores) {
+            jugador.puntuacion = 0;
+
+            for (const juego of juegos) {
+                if (juego.equipos) {
+                    for (const equipo of juego.equipos) {
+                        if (equipo.integrantes.includes(jugador.nombre)) {
+                            if (equipo.puntos) {
+                                jugador.puntuacion += parseInt(equipo.puntos);
+                            } else if (equipo.posicion) {
+                                jugador.puntuacion = parseInt(jugador.puntuacion) + (parseInt(juego.equipos.length) - parseInt(equipo.posicion));
+                            }
+                        }
+                    }
+                } else {
+
+                    if (Array.isArray(juego.jugadores)) {
+                        for (const jugadorJuego of juego.jugadores) {
+                            if (jugadorJuego.nombre == jugador.nombre) {
+                                jugador.puntuacion += parseInt(jugadorJuego.puntuacion);
+                            }
+                        };
+                    }
+                }
+            };
+            duelos.forEach(duelo => {
+                if (duelo.ganador == jugador.nombre) {
+                    jugador.puntuacion += parseInt(duelo.apuesta);
+                } else if (duelo.perdedor == jugador.nombre) {
+                    jugador.puntuacion -= duelo.apuesta;
+                }
+            });
+        };
+    }
+
     function mostrarJugadores(jugadores) {
         const contenedorJugadores = document.getElementById('jugadores');
+
+        calcularPuntuacionJugadores(jugadores);
 
         // Limpiar el contenido anterior
         contenedorJugadores.innerHTML = '';
@@ -161,6 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    const duelos = JSON.parse(localStorage.getItem("duelos")) || [];
     const juegos = JSON.parse(localStorage.getItem("juegos")) || [];
 
     function calcularWinrate(jugador) {
@@ -196,8 +365,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
+    const historicoPosicionesArray = JSON.parse(localStorage.getItem('historico')) || [];
     mostrarJugadores(jugadoresGuardados);
     confeti();
+
 
     function abrirModal(jugador) {
         const modal = document.createElement('div');
@@ -230,24 +401,19 @@ document.addEventListener('DOMContentLoaded', function () {
             nombre_posiciones.push("Posicion " + (i + 1));
         }
         juegos.forEach(juego => {
-            console.log(juego);
             if (juego.equipos) {
                 juego.equipos.forEach(equipo => {
                     const found = equipo.integrantes.find((element) => element == jugador.nombre);
                     if (found) {
-                        console.log(equipo);
                         partidas_jugadas++;
                         posiciones[equipo.posicion - 1]++;
-                        console.log(posiciones);
                     }
                 })
             } else {
                 const found = juego.jugadores.find((element) => element.nombre == jugador.nombre);
                 if (found) {
                     partidas_jugadas++;
-                    console.log("Partida normal " + (juego.jugadores.length - found.puntuacion - 1));
                     posiciones[juego.jugadores.length - found.puntuacion - 1]++;
-                    console.log(posiciones);
                 }
             }
         });
@@ -410,7 +576,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let nombres_contrincantes = contrincantes.map(persona => persona.nombre);
         let ganadas = contrincantes.map(persona => persona.ganadas);
         let perdidas = contrincantes.map(persona => persona.perdidas);
-        console.log(nombres_contrincantes);
 
         modal.appendChild(modalContenido);
         document.body.appendChild(modal);
@@ -452,6 +617,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     }
+
 
 
 
