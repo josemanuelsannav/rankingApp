@@ -48,10 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Si el jugador no se encuentra, findIndex devuelve -1
                 if (indice === -1) {
                     // Si no se encuentra, se asume que la posición es la última
-                    indice = dia.jugadores.length;
+                    indice= null;
+                    posiciones.push(indice);
+                }else{
+                    indice = indice + 1;
+                    posiciones.push(indice);
                 }
-                indice = indice + 1;
-                posiciones.push(indice);
+                
             }
 
             datos.push({
@@ -65,13 +68,14 @@ document.addEventListener('DOMContentLoaded', function () {
             '#FF0000', // Rojo
             '#00FF00', // Verde
             '#0000FF', // Azul
-            '#FFFF00', // Amarillo
+            '#FFD700', // Amarillo
             '#FF00FF', // Magenta
             '#00FFFF', // Cian
-            '#800000', // Marrón
-            '#808000', // Oliva
+            '#590466', // purpura
             '#008080', // Verde azulado
-            '#800080'  // Púrpura
+            '#0F84EB',  // azul
+            '#FF7F50', // naranja
+            '#0F84EB'  // azul
         ];
 
         // Configurar la gráfica
@@ -106,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         beginAtZero: true,
                         reverse: true
+
                     }
                 }
             }
