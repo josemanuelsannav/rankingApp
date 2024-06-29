@@ -89,13 +89,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     <br><br>
                     <button class="borrar-btn">Borrar</button>
                     <button class="Stats-btn">Stats</button>
+                    <button class="editar-btn">Editar</button>
     
                 `;
         // Añadir evento de click al botón de borrar
         borrarBotonStruct(juegoElement, juego);
         //Añadir  evento de click al boton de stats
         statsBotonStruct(juegoElement, juego);
-
+        //Añadir evento de click al boton de editar
+        editarBotonStruct(juegoElement, juego);
 
         listaJuegosContainer.appendChild(juegoElement);
     }
@@ -121,13 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
         <br><br>
         <button class="borrar-btn">Borrar</button>
         <button class="Stats-btn">Stats</button>
+        <button class="editar-btn">Editar</button>
         `;
 
         // Añadir evento de click al botón de borrar
         borrarBotonStruct(juegoElement, juego);
         //Añadir  evento de click al boton de stats
         statsBotonStruct(juegoElement, juego);
-
+        //Añadir evento de click al boton de editar
+        editarBotonStruct(juegoElement, juego);
         listaJuegosContainer.appendChild(juegoElement);
     }
 
@@ -143,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Eliminar el juegoElement del DOM
                 juegoElement.remove();
 
-                // const indiceJuego = juegos.findIndex(j => j.fecha === juego.fecha && j.nombre === juego.nombre);
                 const indiceJuego = juegos.findIndex(j => j.id === juego.id);
                 if (indiceJuego !== -1) {
                     juegos.splice(indiceJuego, 1);
@@ -282,6 +285,141 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function editarBotonStruct(juegoElement, juego) {
+        const editar_btn = juegoElement.querySelector('.editar-btn');
+        editar_btn.addEventListener('click', function () {
+
+            const modal = document.createElement('div');
+            modal.classList.add('modal');
+            const modalContenido = document.createElement('div');
+            modalContenido.classList.add('modal-contenido');
+            const titulo = document.createElement('h1');
+
+            titulo.textContent = juego.nombre;
+
+            const cerrarModal = document.createElement('a');
+            cerrarModal.classList.add('cerrar-modal');
+            cerrarModal.innerHTML = '&times;'; // Usar una "x" para representar el botón de cierre
+            cerrarModal.addEventListener('click', () => {
+                modal.remove();
+                location.reload();//////////////////////////////////Para que no se guarden los cambios que no se quieren guardar
+            });
+            modalContenido.appendChild(cerrarModal);
+            modalContenido.appendChild(titulo);
+
+            modal.appendChild(modalContenido);
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+
+            // Crear y configurar el elemento de texto "Nombre"
+            const labelNombre = document.createElement('label');
+            labelNombre.setAttribute('for', 'nombre');
+            labelNombre.textContent = 'Nombre';
+            labelNombre.style.marginRight = '10px';
+            modalContenido.appendChild(labelNombre);
+
+            const input_nombre = document.createElement('input');
+            input_nombre.setAttribute('type', 'text');
+            input_nombre.setAttribute('placeholder', 'Nombre');
+            input_nombre.setAttribute('id', 'nombre');
+            input_nombre.setAttribute('value', juego.nombre);
+            modalContenido.appendChild(input_nombre);
+
+            const espacio1 = document.createElement('br');
+            modalContenido.appendChild(espacio1);
+
+
+            const espacio6 = document.createElement('br');  
+            modalContenido.appendChild(espacio6);
+
+          /*  let jugadores = juego.jugadores || [];
+            const jugadoresContainer = document.createElement('div');
+            modalContenido.appendChild(jugadoresContainer);
+            mostrarJugadores(jugadores, jugadoresContainer);*/
+
+            const espacio3 = document.createElement('br');
+            modalContenido.appendChild(espacio3);
+            const espacio4 = document.createElement('br');
+            modalContenido.appendChild(espacio4);
+
+            const guardar_btn = document.createElement('button');
+            guardar_btn.textContent = 'Guardar';
+
+            modalContenido.appendChild(guardar_btn);
+
+            guardar_btn.addEventListener('click', function () {
+
+                // Mostrar ventana de confirmación
+                const confirmacion = window.confirm('¿Estás seguro de que deseas editar este elemento?');
+                // Verificar si se ha confirmado la eliminación
+                if (confirmacion) {
+                    // Editar el juegoElement del DOM
+                    const juegoEncontrado = juegos.find(juego2 => juego2.id === juego.id);
+                    if (juegoEncontrado) {
+                        juegoEncontrado.nombre = input_nombre.value;
+                        juegoEncontrado.jugadores = jugadores;
+                        localStorage.setItem('juegos', JSON.stringify(juegos));
+                    }
+
+                }
+                //Buscar juego en historico
+               /* let historico = JSON.parse(localStorage.getItem('historico')) || [];
+                let indiceJuego = historico.findIndex(j => j.id === juego.id && j.nombre === juego.nombre);
+                if (indiceJuego !== -1) {
+                    historico.splice(indiceJuego, 1);
+                    localStorage.setItem('historico', JSON.stringify(historico));
+                }*/
+                location.reload();
+            });
+            
+        });
+    }
+
+    // Función para mostrar jugadores en el contenedor
+    function mostrarJugadores(jugadores, jugadoresContainer) {
+        jugadoresContainer.innerHTML = '';
+
+        jugadores.forEach(function (jugador, index) {
+            const jugadorElement = document.createElement('div');
+            jugadorElement.classList.add('jugador');
+            jugadorElement.innerHTML = `
+            <span>${index + 1}. ${jugador.nombre}</span>
+            <button class="subir-btn" data-index="${index}">Subir</button>
+            <button class="bajar-btn" data-index="${index}">Bajar</button>
+            <input class="no-juega" type="checkbox" data-nombre="${jugador.nombre}">No juega
+        `;
+            jugadoresContainer.appendChild(jugadorElement);
+        });
+
+        // Añadir event listeners para los botones "Subir" y "Bajar"
+        const subirButtons = jugadoresContainer.querySelectorAll('.subir-btn');
+        const bajarButtons = jugadoresContainer.querySelectorAll('.bajar-btn');
+
+        subirButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const index = parseInt(button.getAttribute('data-index'));
+                if (index > 0) {
+                    [jugadores[index], jugadores[index - 1]] = [jugadores[index - 1], jugadores[index]];
+                    mostrarJugadores(jugadores, jugadoresContainer);
+                }
+            });
+        });
+
+        bajarButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const index = parseInt(button.getAttribute('data-index'));
+                if (index < jugadores.length - 1) {
+                    [jugadores[index], jugadores[index + 1]] = [jugadores[index + 1], jugadores[index]];
+                    mostrarJugadores(jugadores, jugadoresContainer);
+                }
+            });
+        });
+    }
+
+
+
+
+
     function showGames() {
         if (!isSearching) {
             showAll();
@@ -315,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectElement.setAttribute("id", "miSelectId-juego-normal");
     }
 
-    
 
-    
+
+
 });
