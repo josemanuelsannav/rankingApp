@@ -42,9 +42,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Eliminar el duelo de la lista de duelos
                 const index = duelos.indexOf(duelo);
                 if (index !== -1) {
-                    borrarPuntuacionDuelo(duelo);
+                    
                     duelos.splice(index, 1);
                     localStorage.setItem('duelos', JSON.stringify(duelos));
+                }
+                // Eliminar el duelo del historico
+                let historico = JSON.parse(localStorage.getItem('historico')) || [];
+                let indiceJuego = historico.findIndex(j => j.id === duelo.id && j.nombre === duelo.nombre);
+                if (indiceJuego !== -1) {
+                    historico.splice(indiceJuego, 1);
+                    localStorage.setItem('historico', JSON.stringify(historico));
                 }
             }
         });
@@ -54,23 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    function borrarPuntuacionDuelo(duelo) {
-        // Obtener la lista de puntuaciones del almacenamiento local
-        const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+    
 
-        const indexGanador = jugadores.findIndex(j => duelo.ganador === j.nombre);
-        const indexPerdedor = jugadores.findIndex(j => duelo.perdedor === j.nombre);
-
-        if (indexGanador !== -1 && indexPerdedor !== -1) {
-            jugadores[indexGanador].puntuacion -= parseInt(duelo.apuesta);
-            jugadores[indexPerdedor].puntuacion += parseInt(duelo.apuesta);
-
-        }
-
-
-
-        localStorage.setItem('jugadores', JSON.stringify(jugadores));
-    }
     function formatearFecha(fecha) {
         console.log(fecha);
         fecha = new Date(fecha);
@@ -83,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return fechaFormateada;
     }
+
     document.getElementById('buscar').addEventListener('click', function () {
         const jugador1 = document.getElementById('buscar-jugador1').value.trim();
         const jugador2 = document.getElementById('buscar-jugador2').value.trim();

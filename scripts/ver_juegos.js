@@ -3,7 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const listaJuegosContainer = document.getElementById('lista-juegos');
     let juegos = JSON.parse(localStorage.getItem('juegos')) || [];
     juegos = [...juegos].slice().reverse();
-    
+    juegos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+
+    showGames();
+    crearSelect_Busqueda();
+
 
     function showAll() {
         //console.log("Funcion. ", juegos);
@@ -30,46 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return fechaFormateada;
     }
 
-    function borrarPuntuacionJuego(juego) {
-        // Obtener la lista de puntuaciones del almacenamiento local
-        const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
-        juego.jugadores.forEach(function (jugador) {
-            const index = jugadores.findIndex(j => j.nombre === jugador.nombre);
-            if (index !== -1) {
-                jugadores[index].puntuacion -= jugador.puntuacion;
-            }
-        });
-
-
-        localStorage.setItem('jugadores', JSON.stringify(jugadores));
-    }
-
-    function borrarPuntuacionJuegoEquipo(juego) {
-        // Obtener la lista de puntuaciones del almacenamiento local
-        const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
-        juego.equipos.forEach(function (equipo) {
-            equipo.integrantes.forEach(function (integrante) {
-                const index = jugadores.findIndex(j => j.nombre === integrante);
-                if (index !== -1) {
-                    if (!equipo.puntos || equipo.puntos == null) {
-                        jugadores[index].puntuacion -= juego.equipos.length - equipo.posicion;
-                    } else {
-                        jugadores[index].puntuacion -= equipo.puntos;
-                    }
-
-                }
-            });
-        });
-
-
-        localStorage.setItem('jugadores', JSON.stringify(jugadores));
-    }
 
     document.getElementById('buscar').addEventListener('click', function () {
         event.preventDefault();
         isSearching = true;
         var lista_juegos = JSON.parse(localStorage.getItem('juegos')) || [];
-        var nombre = document.getElementById("juego-busqueda").value;
+        var nombre = document.getElementById('miSelectId-juego-normal').value;
 
         var juegos_filtrados = lista_juegos.filter(function (juego) {
             return juego.nombre.toLowerCase().includes(nombre.toLowerCase());
@@ -93,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById("mas_reciente").addEventListener('click', function () {
         juegos = [...juegos].slice().reverse();
+        juegos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         console.log(juegos);
         while (listaJuegosContainer.firstChild) {
             listaJuegosContainer.removeChild(listaJuegosContainer.firstChild);
@@ -138,8 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .sort((a, b) => a.posicion - b.posicion) // Ordenar por posición
                 .map((equipo, index) => `
         <div class="jugador">
-            <span>${equipo.posicion}. <b>${equipo.nombre}</b>:</span>
-            <span>${equipo.integrantes}</span>
+            <span>${equipo.posicion}. <b>${equipo.nombre}</b>: </span>
+           <span>${equipo.integrantes}  ${equipo.puntos !== undefined ? `<b style="color:red">    Puntos:</b> ${equipo.puntos}` : ''}</span>
         </div>
          `)
                 .join('')}
@@ -162,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function borrarBotonStruct(juegoElement, juego) {
         const borrarBtn = juegoElement.querySelector('.borrar-btn');
         borrarBtn.addEventListener('click', function () {
-            debugger
+
             // Mostrar ventana de confirmación
             const confirmacion = window.confirm('¿Estás seguro de que deseas borrar este elemento?');
 
@@ -170,25 +142,20 @@ document.addEventListener('DOMContentLoaded', function () {
             if (confirmacion) {
                 // Eliminar el juegoElement del DOM
                 juegoElement.remove();
-                // Eliminar el juego de la lista de juegos
-                /*const index = juegos.indexOf(juego);
-                if (index !== -1) {
-                    borrarPuntuacionJuego(juego);
-                    juegos.splice(index, 1);
-                    localStorage.setItem('juegos', JSON.stringify(juegos));
-                }*/
-                const indiceJuego = juegos.findIndex(j => j.fecha === juego.fecha && j.nombre === juego.nombre);
 
+                // const indiceJuego = juegos.findIndex(j => j.fecha === juego.fecha && j.nombre === juego.nombre);
+                const indiceJuego = juegos.findIndex(j => j.id === juego.id);
                 if (indiceJuego !== -1) {
-                    if (!juego.equipos) {
-                        borrarPuntuacionJuego(juego);
-                    } else {
-                        borrarPuntuacionJuegoEquipo(juego);
-                    }
-
                     juegos.splice(indiceJuego, 1);
                     localStorage.setItem('juegos', JSON.stringify(juegos));
                 }
+            }
+            //Buscar juego en historico
+            let historico = JSON.parse(localStorage.getItem('historico')) || [];
+            let indiceJuego = historico.findIndex(j => j.id === juego.id && j.nombre === juego.nombre);
+            if (indiceJuego !== -1) {
+                historico.splice(indiceJuego, 1);
+                localStorage.setItem('historico', JSON.stringify(historico));
             }
         });
     }
@@ -223,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let lista_jugadores = [];
             const partidas = JSON.parse(localStorage.getItem('juegos')) || [];
             const partidas_del_juego = partidas.filter(partida => partida.nombre === juego.nombre);
+            console.log("partidas del juego: ", partidas_del_juego);
             let num_partidas = partidas_del_juego.length;
 
             for (const partida of partidas_del_juego) {
@@ -240,14 +208,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         for (const jugador of equipo.integrantes) {
                             const player = lista_jugadores.find(j => j.nombre === jugador);
                             const partidasAux = JSON.parse(localStorage.getItem('jugadores')) || [];
-                            const player2 = partidasAux.find(j=> j.nombre === jugador);
+                            const player2 = partidasAux.find(j => j.nombre === jugador);
 
                             if (!player && player2) {
                                 let jugador2 = null;
                                 if (!equipo.puntos) {
                                     jugador2 = {
                                         nombre: jugador,
-                                        puntuacion: partida.equipos.length - equipo.posicion
+                                        puntuacion: parseInt(partida.equipos.length) - parseInt(equipo.posicion)
                                     };
                                 } else {
                                     jugador2 = {
@@ -258,12 +226,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                 lista_jugadores.push(jugador2);
 
-                            } else if(player2) {
+                            } else if (player2) {
                                 if (!equipo.puntos) {
                                     debugger;
-                                    player.puntuacion = player.puntuacion + parseInt(partida.equipos.length - equipo.posicion);
+                                    player.puntuacion = parseInt(player.puntuacion) + parseInt(partida.equipos.length - equipo.posicion);
                                 } else {
-                                    player.puntuacion = player.puntuacion + parseInt(equipo.puntos);
+                                    player.puntuacion = parseInt(player.puntuacion) + parseInt(equipo.puntos);
                                 }
 
                             }
@@ -292,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: {
                     labels: nombres,
                     datasets: [{
-                        label: 'Partidas jugadas : '+num_partidas,
+                        label: 'Partidas jugadas : ' + num_partidas,
                         data: valores,
                         backgroundColor: 'rgba(54, 162, 235, 0.5)',
                         borderColor: 'rgba(54, 162, 235, 1)',
@@ -319,7 +287,35 @@ document.addEventListener('DOMContentLoaded', function () {
             showAll();
         }
     }
+    function obtenerJuegos() {
+        let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
+        juegos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        let opciones = [];
+        for (const juego of juegos) {
+            if (!opciones.includes(juego.nombre)) {
+                opciones.push(juego.nombre);
+            }
+        }
+        return opciones;
+    }
 
-    showGames();
+    function crearSelect_Busqueda() {
+        let selectContainer = document.querySelector(".select-container-juego-normal");
+        let selectElement = document.createElement("select");
+        let opciones = obtenerJuegos();
+        ;
+        opciones.forEach((opcion) => {
+            let optionElement = document.createElement("option");
+            optionElement.text = opcion;
+            optionElement.value = opcion;
+            selectElement.appendChild(optionElement);
+        });
+        selectContainer.appendChild(selectElement)
+        selectElement.setAttribute("name", "miSelect-juego-normal");
+        selectElement.setAttribute("id", "miSelectId-juego-normal");
+    }
 
+    
+
+    
 });

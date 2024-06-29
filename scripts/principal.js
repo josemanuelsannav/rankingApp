@@ -1,10 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('player-form');
-    const goToView2Button = document.getElementById('go-to-view2');
+    const empezarButton = document.getElementById('go-to-view2');
     const upload_dataButton = document.getElementById("upload");
     const fileInput = document.getElementById('fileInput');
 
 
+
+    /**
+     * 
+     * @returns {number} Devuelve un número único para el id de un jugador
+     */
+    function obtenerIdUnico() {
+        const jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+        const ids = jugadores.map(jugador => jugador.id);
+        const nuevoId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+        return nuevoId;
+    }
+
+    /*
+    Crear un Jugador
+    */
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
@@ -14,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Crear un objeto jugador con los valores obtenidos
         const jugador = {
+            id: obtenerIdUnico(),
             nombre: nombre,
             foto: foto,
             puntuacion: 0
@@ -26,9 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
     });
 
-    // Función para guardar el jugador en el almacenamiento local
+    /*
+    Función para guardar el jugador en el almacenamiento local
+    */
     function guardarJugadorEnLocalStorage(jugador) {
-        // Verificar si ya hay jugadores almacenados en el almacenamiento local
         let jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
 
         // Agregar el nuevo jugador a la lista
@@ -37,9 +54,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Guardar la lista actualizada de jugadores en el almacenamiento local
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
         mostrarJugadores(jugadores);
-        console.log('Jugador guardado en el almacenamiento local:', jugador);
     }
 
+    /*
+    Funcion para mostrar los jugadores en la vista
+    */
     function mostrarJugadores(jugadores) {
         const contenedorJugadores = document.getElementById('jugadores');
 
@@ -75,10 +94,14 @@ document.addEventListener('DOMContentLoaded', function () {
             contenedorJugadores.appendChild(card);
         });
     }
+
     const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
     mostrarJugadores(jugadoresGuardados);
 
-    goToView2Button.addEventListener('click', function () {
+    /*
+    Boton para entrar en la vista de ranking
+    */
+    empezarButton.addEventListener('click', function () {
         // Redireccionar a otra vista
         window.location.href = '/ranking'; // Cambia 'otra_vista.html' por la URL de la otra vista
     });
@@ -102,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     almacenarDatosEnLocalStorage(jsonData.juegos, 'juegos');
                     almacenarDatosEnLocalStorage(jsonData.nombre_juegos, 'nombre-juegos');
                     almacenarDatosEnLocalStorage(jsonData.duelos, 'duelos');
+                    almacenarDatosEnLocalStorage(jsonData.historico, 'historico');
                     window.location.reload();
                 } catch (error) {
                     console.error('Error al parsear el archivo JSON:', error);
@@ -115,19 +139,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Función para cargar un archivo JSON desde el dispositivo y almacenar sus datos en localStorage
-
-
     // Función para almacenar datos JSON en el localStorage
     function almacenarDatosEnLocalStorage(jsonData, key) {
         try {
-            // Convertir el objeto JSON a una cadena JSON
             const jsonString = JSON.stringify(jsonData);
-
             // Almacenar la cadena JSON en el localStorage bajo la clave proporcionada
             localStorage.setItem(key, jsonString);
-
-            console.log('Datos almacenados en el localStorage.');
         } catch (error) {
             console.error('Error al almacenar datos en el localStorage:', error);
         }

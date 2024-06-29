@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     const jugadoresContainer = document.getElementById('jugadores');
-    let jugadores = JSON.parse(localStorage.getItem('jugadores')) || []; // Array para almacenar la lista de jugadores
+    let jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
     const gameForm = document.getElementById('game-form');
     const addEquipoBtn = document.getElementById("addEquipo");
     const saveEquipoBtn = document.getElementById("save-juego-equipo");
 
+    mostrarJugadores();
+    crearSelects();
 
     // Función para mostrar los jugadores en la lista
     function mostrarJugadores() {
@@ -52,11 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Ejemplo de carga inicial de jugadores
-
-    mostrarJugadores();
-    crearSelects();
-
     function contarCheckboxMarcados() {
         // Seleccionar todos los elementos checkbox con la clase "no-juega"
         const checkboxes = document.querySelectorAll('.no-juega');
@@ -80,38 +77,40 @@ document.addEventListener('DOMContentLoaded', function () {
         const jugadoresAlmacenados = JSON.parse(localStorage.getItem('jugadores')) || [];
         const cantidadJugadores = jugadoresAlmacenados.length;
         const numeroCheckboxMarcados = contarCheckboxMarcados();
+        console.log(jugadores);
         // Recorrer los jugadores y actualizar su puntuación
         jugadores.forEach(function (jugador, index) {
             // Buscar al jugador en el almacenamiento local por su nombre
             const checkbox = document.querySelector(`input[data-nombre="${jugador.nombre}"]`);
             if (checkbox && !checkbox.checked) {
-                const jugadorAlmacenado = jugadoresAlmacenados.find(j => j.nombre === jugador.nombre);
                 let x = cantidadJugadores - numeroCheckboxMarcados - index - 1;
-                console.log(x);
-                const newJugador = { nombre: jugador.nombre, puntuacion: x, foto: jugador.foto };
+                const newJugador = { nombre: jugador.nombre, puntuacion: x, foto: jugador.foto, id: jugador.id };
                 jugadoresDeJuego.push(newJugador);
-                if (jugadorAlmacenado) {
-                    // Si se encuentra al jugador, sumar su puntuación anterior con la nueva puntuación calculada
-                    jugador.puntuacion = jugadorAlmacenado.puntuacion + (cantidadJugadores - numeroCheckboxMarcados) - index - 1;
-                } else {
-                    // Si el jugador no se encuentra en el almacenamiento local, asignar la nueva puntuación directamente
-                    jugador.puntuacion = (cantidadJugadores - numeroCheckboxMarcados) - index - 1;
-                }
+               
             }
         });
-        console.log(jugadoresDeJuego);
     }
 
-    function guardarJugadoresEnLocalStorage() {
-
-        localStorage.setItem('jugadores', JSON.stringify(jugadores));
+    function obtenerIdUnico() {
+        const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
+        
+        const idsJuegos = juegos.map(juego => juego.id);
+        const idsDuelos = duelos.map(duelo => duelo.id);
+        
+        const todosLosIds = idsJuegos.concat(idsDuelos);
+        const nuevoId = todosLosIds.length > 0 ? Math.max(...todosLosIds) + 1 : 1;
+        
+        return nuevoId;
     }
 
+    
     function guardarJuegoEnLocalStorage() {
         const nuevoJuego = {
             nombre: document.getElementById('miSelectId-juego-normal').value,
             jugadores: jugadoresDeJuego,
-            fecha: new Date()
+            fecha: new Date(),
+            id: obtenerIdUnico()
         };
         console.log(nuevoJuego);
 
@@ -129,13 +128,13 @@ document.addEventListener('DOMContentLoaded', function () {
             juegos = [nuevoJuego];
             localStorage.setItem('juegos', JSON.stringify(juegos));
         }
+        guardarHistorico(nuevoJuego);
     }
 
-
+    //al guardar un juego ynormal
     gameForm.addEventListener('submit', function (event) {
         event.preventDefault();
         actualizarPuntuacion();
-        guardarJugadoresEnLocalStorage();
         guardarJuegoEnLocalStorage();
         alert('Puntuaciones actualizadas y juego guardado con éxito.');
         window.location.href = '/ranking';
@@ -195,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
-    saveEquipoBtn.addEventListener("click",// Función para guardar los datos del juego en localStorage
+    saveEquipoBtn.addEventListener("click",// Función para guardar los datos del juego de equipo en localStorage
         function guardarJuego() {
             // Obtener el nombre del juego
             const nombreJuego = document.getElementById('miSelectId-juego-equipo').value;
@@ -222,7 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const juego = {
                 nombre: nombreJuego,
                 equipos: equipos,
-                fecha: new Date()
+                fecha: new Date(),
+                id: obtenerIdUnico()
             };
 
 
@@ -231,30 +231,13 @@ document.addEventListener('DOMContentLoaded', function () {
             juegos.push(juego);
 
             localStorage.setItem('juegos', JSON.stringify(juegos));
+            guardarHistorico(juego);
 
-            añadirPuntos(juego);
             alert('El juego ha sido guardado en localStorage.');
             window.location.href = '/ranking';
         }
     );
 
-    function añadirPuntos(juego) {
-        //jugadores
-        for (const equipo of juego.equipos) {
-            for (const integrante of equipo.integrantes) {
-                const jugador = jugadores.find(jugador => jugador.nombre === integrante);
-                if (jugador) {
-                    if (!equipo.puntos || equipo.puntos == null) {
-                        jugador.puntuacion = jugador.puntuacion + (juego.equipos.length - equipo.posicion);
-                    } else {
-                        jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(equipo.puntos);
-
-                    }
-                }
-            }
-        }
-        localStorage.setItem('jugadores', JSON.stringify(jugadores));
-    };
 
     document.getElementById('duelo-form').addEventListener('submit', function (event) {
         // Prevenir la acción por defecto del formulario
@@ -282,19 +265,20 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
         let fechaActual = new Date();
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        duelos.push({ nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor,fecha: fechaActual});
+        const duelo = { nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor, fecha: fechaActual ,id: obtenerIdUnico()};
+        duelos.push(duelo);
         localStorage.setItem('duelos', JSON.stringify(duelos));
+        
+        guardarHistorico(duelo);
         alert('Puntuaciones actualizadas y duelo guardado con éxito.');
         window.location.href = '/ranking';
     });
 
-    function crearSelects() {
-
-
+    function crearSelects() {//Crear los desplegables con los nombres de los juegos y ponerlos en la pagina
         //Desplegable de los nombres y tal
         let selectContainer = document.querySelector(".select-container-juego-normal");
         let selectElement = document.createElement("select");
-        let opciones =obtenerJuegos();
+        let opciones = obtenerJuegos();
         ;
         opciones.forEach((opcion) => {
             let optionElement = document.createElement("option");
@@ -333,6 +317,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function obtenerJuegos() {
         let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
+        juegos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
         //console.log(juegos);
         let opciones = [];
         for (const juego of juegos) {
@@ -344,13 +330,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return opciones;
     }
 
-    document.getElementById('new-game').addEventListener("submit",function(event){
+    document.getElementById('new-game').addEventListener("submit", function (event) {//crear nombre de juego
         var nombre2 = document.getElementById("nombre-juego-nuevo").value;
-        console.log(nombre2);
         const nuevoJuego = {
             nombre: nombre2
         };
-        console.log(nuevoJuego);
 
         let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
 
@@ -367,4 +351,67 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem('nombre-juegos', JSON.stringify(juegos));
         }
     });
+
+
+    function guardarHistorico(juego){
+        debugger;
+        let historico = JSON.parse(localStorage.getItem('historico')) || [];
+        const nuevoRegistro = {
+            jugadores : obtenerRanking(),
+            fecha: juego.fecha,
+            id: juego.id,
+            nombre: juego.nombre
+        };
+        historico.push(nuevoRegistro);
+        localStorage.setItem('historico', JSON.stringify(historico));
+    }
+
+    function obtenerRanking(){
+        jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
+        calcularPuntuaciones(jugadores);
+        jugadores.sort((a, b) => b.puntuacion - a.puntuacion);
+        return jugadores;
+    }
+
+    function calcularPuntuaciones(listajugadores) {
+        
+        const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
+        for(const jugador of listajugadores){
+            jugador.puntuacion = 0;
+            //Mirar en los juegos
+            for(const juego of juegos){ 
+                //juego por equipos
+                if(juego.equipos){
+                    for(const equipo of juego.equipos){
+                        for(const integrante of equipo.integrantes){
+                            if(integrante == jugador.nombre){
+                                if(equipo.puntos){
+                                    jugador.puntuacion = parseInt(jugador.puntuacion) +  parseInt(equipo.puntos);
+                                }else{
+                                    jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(juego.equipos.length) - parseInt(equipo.posicion);
+                                }
+                            }
+                        }
+                        
+                    }
+                }else{//juego por individuales
+                    for(const jugadorJuego of juego.jugadores){
+                        if(jugadorJuego.nombre == jugador.nombre){
+                            jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(jugadorJuego.puntuacion);
+                        }
+                    }
+                }
+            }
+             //Mirar en los duelos
+             for(const duelo of duelos){
+                if(duelo.ganador == jugador.nombre){
+                    jugador.puntuacion = parseInt(jugador.puntuacion) +  parseInt(duelo.apuesta);
+                }else if(jugador.nombre == duelo.perdedor){
+                    jugador.puntuacion = parseInt(jugador.puntuacion) -  parseInt(duelo.apuesta);
+                }
+        }
+       
+    }}
+
 });

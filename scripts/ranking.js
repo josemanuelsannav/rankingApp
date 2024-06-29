@@ -3,37 +3,144 @@ document.addEventListener('DOMContentLoaded', function () {
     const verJuegoBtn = document.getElementById('ver-juegos-btn');
     const downloadDataBtn = document.getElementById("download");
     const dueloBtn = document.getElementById("ver-duelos-btn");
-    
-    
-    function confeti (){
-        
-        let canvas = document.createElement("canvas");
-            let container = document.getElementsByClassName("jss1040")[0];
-            canvas.width = 600;
-            canvas.height = 600;
+    const verHistoricoBtn = document.getElementById("ver-historico-btn");
 
-            container.appendChild(canvas);
 
-            let confetti_button = confetti.create(canvas);
-            confetti_button().then(() => container.removeChild(canvas));
-    }
-    
+    verHistoricoBtn.addEventListener('click', function () {
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+        const modalContenido = document.createElement('div');
+        modalContenido.classList.add('modal-contenido');
+        const titulo = document.createElement('h1');
 
+        titulo.textContent = "Evolución Ranking";
+
+        const cerrarModal = document.createElement('a');
+        cerrarModal.classList.add('cerrar-modal');
+        cerrarModal.innerHTML = '&times;';
+        cerrarModal.addEventListener('click', () => {
+            modal.remove();
+        });
+        modalContenido.appendChild(cerrarModal);
+        modalContenido.appendChild(titulo);
+
+        // Crear lienzo para la gráfica
+        const canvas = document.createElement('canvas');
+        canvas.id = 'grafica_historico';
+        modalContenido.appendChild(canvas);
+
+        modal.appendChild(modalContenido);
+        document.body.appendChild(modal);
+        modal.style.display = 'block';
+
+        const historicoPosicionesArray = JSON.parse(localStorage.getItem('historico')) || [];
+
+        const nombres_jugadores = jugadoresGuardados.map(jugador => jugador.nombre);
+        const dias = historicoPosicionesArray.map(historico => formatearFecha(historico.fecha) + ' ' + historico.nombre);
+
+        const datos = [];
+        for (const nombre of nombres_jugadores) {
+            const posiciones = [];
+
+            for (const dia of historicoPosicionesArray) {
+                // Buscar el índice del jugador por nombre en la lista de jugadores del día
+                let indice = dia.jugadores.findIndex(jugador => jugador.nombre === nombre);
+                // Si el jugador no se encuentra, findIndex devuelve -1
+                if (indice === -1) {
+                    // Si no se encuentra, se asume que la posición es la última
+                    indice = dia.jugadores.length;
+                }
+                indice = indice + 1;
+                posiciones.push(indice);
+            }
+
+            datos.push({
+                nombre: nombre,
+                posiciones: posiciones
+            });
+        }
+
+        // Paleta de colores predefinida
+        const coloresPredefinidos = [
+            '#FF0000', // Rojo
+            '#00FF00', // Verde
+            '#0000FF', // Azul
+            '#FFFF00', // Amarillo
+            '#FF00FF', // Magenta
+            '#00FFFF', // Cian
+            '#800000', // Marrón
+            '#808000', // Oliva
+            '#008080', // Verde azulado
+            '#800080'  // Púrpura
+        ];
+
+        // Configurar la gráfica
+        var ctx = canvas.getContext('2d');
+
+        // Crear la gráfica de líneas
+        var grafica = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dias,
+                datasets: datos.map((persona, index) => ({
+                    label: persona.nombre,
+                    data: persona.posiciones,
+                    borderColor: coloresPredefinidos[index % coloresPredefinidos.length],
+                    fill: false
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Días'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Posiciones'
+                        },
+                        beginAtZero: true,
+                        reverse: true
+                    }
+                }
+            }
+        });
+    });
+
+
+
+    /**
+     * Evento para redireccionar a la vista de todos los duelos
+     */
     dueloBtn.addEventListener('click', function () {
-        
+
         window.location.href = '/ver_duelos';
     });
 
+    /**
+     * Evento para redireccionar a la vista de todos los juegos
+     */
     verJuegoBtn.addEventListener('click', function () {
         // Redireccionar a la otra vista
         window.location.href = '/ver_juegos'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
 
+    /**
+     * Evento para redireccionar a la vista de nuevo juego
+     */
     nuevoJuegoBtn.addEventListener('click', function () {
         // Redireccionar a la otra vista
         window.location.href = '/nuevo_juego'; // Reemplaza 'nueva_vista.html' con la URL de tu nueva vista
     });
 
+    /**
+     * Evento para descargar los datos almacenados en el localStorage
+     */
     downloadDataBtn.addEventListener("click", function () {
         try {
             // Obtener los datos almacenados en el localStorage
@@ -41,8 +148,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const juegos = JSON.parse(localStorage.getItem('juegos'));
             const duelos = JSON.parse(localStorage.getItem('duelos'));
             const nombre_juegos = JSON.parse(localStorage.getItem('nombre-juegos'));
+            const historico = JSON.parse(localStorage.getItem('historico'));
             // Combinar los datos en un objeto JSON
-            const datosJSON = { jugadores, juegos, duelos, nombre_juegos };
+            const datosJSON = { jugadores, juegos, duelos, nombre_juegos, historico };
 
             // Convertir el objeto JSON a una cadena JSON
             const jsonString = JSON.stringify(datosJSON, null, 2);
@@ -193,11 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return winrate;
     }
-
-
-    const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
-    mostrarJugadores(jugadoresGuardados);
-    confeti();
 
     function abrirModal(jugador) {
         const modal = document.createElement('div');
@@ -452,6 +555,80 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     }
+
+    function calcularPuntuaciones(listajugadores) {
+
+        const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
+        for (const jugador of listajugadores) {
+            jugador.puntuacion = 0;
+            //Mirar en los juegos
+            for (const juego of juegos) {
+                //juego por equipos
+                if (juego.equipos) {
+                    for (const equipo of juego.equipos) {
+                        for (const integrante of equipo.integrantes) {
+                            if (integrante == jugador.nombre) {
+                                if (equipo.puntos) {
+                                    jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(equipo.puntos);
+                                } else {
+                                    jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(juego.equipos.length) - parseInt(equipo.posicion);
+                                }
+                            }
+                        }
+
+                    }
+                } else {//juego por individuales
+                    for (const jugadorJuego of juego.jugadores) {
+                        if (jugadorJuego.nombre == jugador.nombre) {
+                            jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(jugadorJuego.puntuacion);
+                        }
+                    }
+                }
+            }
+            //Mirar en los duelos
+            for (const duelo of duelos) {
+                if (duelo.ganador == jugador.nombre) {
+                    jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(duelo.apuesta);
+                } else if (jugador.nombre == duelo.perdedor) {
+                    jugador.puntuacion = parseInt(jugador.puntuacion) - parseInt(duelo.apuesta);
+                }
+            }
+
+        }
+    }
+
+    function confeti() {
+
+        let canvas = document.createElement("canvas");
+        let container = document.getElementsByClassName("jss1040")[0];
+        canvas.width = 600;
+        canvas.height = 600;
+
+        container.appendChild(canvas);
+
+        let confetti_button = confetti.create(canvas);
+        confetti_button().then(() => container.removeChild(canvas));
+    }
+
+    function formatearFecha(fecha) {
+        fecha = new Date(fecha);
+
+        let dia = String(fecha.getDate()).padStart(2, '0');
+        let mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript comienzan desde 0
+        let año = fecha.getFullYear();
+
+        let fechaFormateada = dia + '/' + mes + '/' + año;
+
+        return fechaFormateada;
+    }
+
+    const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
+    calcularPuntuaciones(jugadoresGuardados);
+    mostrarJugadores(jugadoresGuardados);
+    confeti();
+
+
 
 
 
