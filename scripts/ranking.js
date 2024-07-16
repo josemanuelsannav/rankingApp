@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 
             }
-
+           
             datos.push({
                 nombre: nombre,
                 posiciones: posiciones
@@ -244,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('segundo').innerText = jugadores[1].nombre;
         winrate = parseFloat(calcularWinrate(jugadores[1]).toFixed(2));
         document.getElementById('puntos-segundo').innerText = jugadores[1].puntuacion + " pts.   Wr: " + winrate + "%";
+        
         const imagen2 = document.createElement('img');
         imagen2.src = jugadores[1].foto;
         document.getElementById("foto-segundo").appendChild(imagen2);
@@ -562,10 +563,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function calcularPuntuaciones(listajugadores) {
-
+        
         const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        juegos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
         for (const jugador of listajugadores) {
+            debugger;
             jugador.puntuacion = 0;
             //Mirar en los juegos
             for (const juego of juegos) {
@@ -591,6 +594,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
             }
+           
             //Mirar en los duelos
             for (const duelo of duelos) {
                 if (duelo.ganador == jugador.nombre) {
@@ -628,8 +632,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return fechaFormateada;
     }
 
+    
     const jugadoresGuardados = JSON.parse(localStorage.getItem('jugadores')) || [];
+    console.log(jugadoresGuardados);
     calcularPuntuaciones(jugadoresGuardados);
+    console.log(jugadoresGuardados);
     mostrarJugadores(jugadoresGuardados);
     confeti();
 

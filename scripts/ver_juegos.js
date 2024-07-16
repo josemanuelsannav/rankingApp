@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showAll() {
         //console.log("Funcion. ", juegos);
+        juegos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
         juegos.forEach(function (juego) {
             if (!juego.equipos) {
 
@@ -147,20 +149,71 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Eliminar el juegoElement del DOM
                 juegoElement.remove();
 
+                //Buscar juego en historico
+                let historico = JSON.parse(localStorage.getItem('historico')) || [];
+
+                historico.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+                let indiceJuego2 = historico.findIndex(j => j.id === juego.id);
+
+                if (indiceJuego2 !== -1) {
+
+                    reCalcularPuntuacionesHistorico(historico, indiceJuego2);
+                    historico.splice(indiceJuego2, 1);
+
+                    localStorage.setItem('historico', JSON.stringify(historico));
+                }
+
+                //borrar juego de la lista de juegos
                 const indiceJuego = juegos.findIndex(j => j.id === juego.id);
                 if (indiceJuego !== -1) {
                     juegos.splice(indiceJuego, 1);
                     localStorage.setItem('juegos', JSON.stringify(juegos));
                 }
             }
-            //Buscar juego en historico
-            let historico = JSON.parse(localStorage.getItem('historico')) || [];
-            let indiceJuego = historico.findIndex(j => j.id === juego.id && j.nombre === juego.nombre);
-            if (indiceJuego !== -1) {
-                historico.splice(indiceJuego, 1);
-                localStorage.setItem('historico', JSON.stringify(historico));
-            }
+
         });
+    }
+
+    function reCalcularPuntuacionesHistorico(historico, indiceJuego) {
+        console.log(historico);
+
+        const elemento = historico[indiceJuego];
+        console.log("Juego a borrar", elemento);
+
+        let juegoAux = juegos.find(j => j.id === elemento.id);
+        console.log("Juego auxiliar de la lista de juegos", juegoAux);
+
+        if (indiceJuego > 0 && indiceJuego < historico.length - 1) {
+
+            for (let i = indiceJuego; i < historico.length; i++) {
+
+                for (jugador of historico[i].jugadores) {
+                    if (juegoAux.equipos) {
+                        for (equipo of juegoAux.equipos) {
+                            if (equipo.integrantes.includes(jugador.nombre)) {
+                                let jugadorAux = historico[i].jugadores.find(j => j.nombre === jugador.nombre);
+                                if (jugadorAux) {
+                                    if(equipo.puntos){
+                                        jugador.puntuacion = parseInt(jugador.puntuacion) - parseInt(equipo.puntos);
+                                    }else{
+                                        jugador.puntuacion = parseInt(jugador.puntuacion) - parseInt(equipo.posicion);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        let jugadorAux = juegoAux.jugadores.find(j => j.nombre === jugador.nombre);
+                        if (jugadorAux) {
+                            jugador.puntuacion = parseInt(jugador.puntuacion) - parseInt(jugadorAux.puntuacion);
+                        }
+                    }
+
+                }
+            }
+        } else if (indiceJuego === 0) {
+
+        }
     }
 
     function statsBotonStruct(juegoElement, juego) {
@@ -329,13 +382,13 @@ document.addEventListener('DOMContentLoaded', function () {
             modalContenido.appendChild(espacio1);
 
 
-            const espacio6 = document.createElement('br');  
+            const espacio6 = document.createElement('br');
             modalContenido.appendChild(espacio6);
 
-          /*  let jugadores = juego.jugadores || [];
-            const jugadoresContainer = document.createElement('div');
-            modalContenido.appendChild(jugadoresContainer);
-            mostrarJugadores(jugadores, jugadoresContainer);*/
+            /*  let jugadores = juego.jugadores || [];
+              const jugadoresContainer = document.createElement('div');
+              modalContenido.appendChild(jugadoresContainer);
+              mostrarJugadores(jugadores, jugadoresContainer);*/
 
             const espacio3 = document.createElement('br');
             modalContenido.appendChild(espacio3);
@@ -363,15 +416,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 }
                 //Buscar juego en historico
-               /* let historico = JSON.parse(localStorage.getItem('historico')) || [];
-                let indiceJuego = historico.findIndex(j => j.id === juego.id && j.nombre === juego.nombre);
-                if (indiceJuego !== -1) {
-                    historico.splice(indiceJuego, 1);
-                    localStorage.setItem('historico', JSON.stringify(historico));
-                }*/
+                /* let historico = JSON.parse(localStorage.getItem('historico')) || [];
+                 let indiceJuego = historico.findIndex(j => j.id === juego.id && j.nombre === juego.nombre);
+                 if (indiceJuego !== -1) {
+                     historico.splice(indiceJuego, 1);
+                     localStorage.setItem('historico', JSON.stringify(historico));
+                 }*/
                 location.reload();
             });
-            
+
         });
     }
 
@@ -416,15 +469,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-
-
-
-
     function showGames() {
         if (!isSearching) {
             showAll();
         }
     }
+
     function obtenerJuegos() {
         let juegos = JSON.parse(localStorage.getItem('nombre-juegos')) || [];
         juegos.sort((a, b) => a.nombre.localeCompare(b.nombre));
