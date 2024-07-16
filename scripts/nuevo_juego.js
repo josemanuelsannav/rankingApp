@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let x = cantidadJugadores - numeroCheckboxMarcados - index - 1;
                 const newJugador = { nombre: jugador.nombre, puntuacion: x, foto: jugador.foto, id: jugador.id };
                 jugadoresDeJuego.push(newJugador);
-               
+
             }
         });
     }
@@ -94,17 +94,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function obtenerIdUnico() {
         const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        
+
         const idsJuegos = juegos.map(juego => juego.id);
         const idsDuelos = duelos.map(duelo => duelo.id);
-        
+
         const todosLosIds = idsJuegos.concat(idsDuelos);
         const nuevoId = todosLosIds.length > 0 ? Math.max(...todosLosIds) + 1 : 1;
-        
+
         return nuevoId;
     }
 
-    
+
     function guardarJuegoEnLocalStorage() {
         const nuevoJuego = {
             nombre: document.getElementById('miSelectId-juego-normal').value,
@@ -265,10 +265,10 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('jugadores', JSON.stringify(jugadores));
         let fechaActual = new Date();
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        const duelo = { nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor, fecha: fechaActual ,id: obtenerIdUnico()};
+        const duelo = { nombre: nombreDuelo, apuesta: apuesta, ganador: ganador, perdedor: perdedor, fecha: fechaActual, id: obtenerIdUnico() };
         duelos.push(duelo);
         localStorage.setItem('duelos', JSON.stringify(duelos));
-        
+
         guardarHistorico(duelo);
         alert('Puntuaciones actualizadas y duelo guardado con éxito.');
         window.location.href = '/ranking';
@@ -353,11 +353,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    function guardarHistorico(juego){
-        debugger;
+    function guardarHistorico(juego) {
         let historico = JSON.parse(localStorage.getItem('historico')) || [];
         const nuevoRegistro = {
-            jugadores : obtenerRanking(),
+            jugadores: obtenerRanking(),
             fecha: juego.fecha,
             id: juego.id,
             nombre: juego.nombre
@@ -366,52 +365,95 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('historico', JSON.stringify(historico));
     }
 
-    function obtenerRanking(){
+    function obtenerRanking() {
         jugadores = JSON.parse(localStorage.getItem('jugadores')) || [];
         calcularPuntuaciones(jugadores);
-        jugadores.sort((a, b) => b.puntuacion - a.puntuacion);
+        //jugadores.sort((a, b) => b.puntuacion - a.puntuacion);
+
+        jugadores.sort((a, b) => {
+            // Primero compara por puntuación
+            if (b.puntuacion !== a.puntuacion) {
+              return b.puntuacion - a.puntuacion;
+            }
+            // Si las puntuaciones son iguales, compara por winrate
+            return calcularWinrate(b) - calcularWinrate(a);
+          });
+
         return jugadores;
     }
 
+    function calcularWinrate(jugador) {
+        let num_juegos = 0;
+        let victorias = 0;
+        const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
+        juegos.forEach(juego => {
+            if (juego.equipos) {
+                juego.equipos.forEach(equipo => {
+                    const found = equipo.integrantes.find((element) => element == jugador.nombre);
+                    if (found) {
+                        num_juegos++;
+                        if (equipo.posicion == 1) {
+                            victorias++;
+                        }
+                    }
+                })
+            } else {
+                const found = juego.jugadores.find((element) => element.nombre == jugador.nombre);
+                if (found) {
+                    num_juegos++;
+                    if (found.puntuacion == juego.jugadores.length - 1) {
+                        victorias++;
+                    }
+                }
+            }
+        });
+        let winrate = 0;
+        if (num_juegos != 0) {
+            winrate = (victorias / num_juegos) * 100;
+        }
+        return winrate;
+    }
+
     function calcularPuntuaciones(listajugadores) {
-        
+
         const juegos = JSON.parse(localStorage.getItem('juegos')) || [];
         const duelos = JSON.parse(localStorage.getItem('duelos')) || [];
-        for(const jugador of listajugadores){
+        for (const jugador of listajugadores) {
             jugador.puntuacion = 0;
             //Mirar en los juegos
-            for(const juego of juegos){ 
+            for (const juego of juegos) {
                 //juego por equipos
-                if(juego.equipos){
-                    for(const equipo of juego.equipos){
-                        for(const integrante of equipo.integrantes){
-                            if(integrante == jugador.nombre){
-                                if(equipo.puntos){
-                                    jugador.puntuacion = parseInt(jugador.puntuacion) +  parseInt(equipo.puntos);
-                                }else{
+                if (juego.equipos) {
+                    for (const equipo of juego.equipos) {
+                        for (const integrante of equipo.integrantes) {
+                            if (integrante == jugador.nombre) {
+                                if (equipo.puntos) {
+                                    jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(equipo.puntos);
+                                } else {
                                     jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(juego.equipos.length) - parseInt(equipo.posicion);
                                 }
                             }
                         }
-                        
+
                     }
-                }else{//juego por individuales
-                    for(const jugadorJuego of juego.jugadores){
-                        if(jugadorJuego.nombre == jugador.nombre){
+                } else {//juego por individuales
+                    for (const jugadorJuego of juego.jugadores) {
+                        if (jugadorJuego.nombre == jugador.nombre) {
                             jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(jugadorJuego.puntuacion);
                         }
                     }
                 }
             }
-             //Mirar en los duelos
-             for(const duelo of duelos){
-                if(duelo.ganador == jugador.nombre){
-                    jugador.puntuacion = parseInt(jugador.puntuacion) +  parseInt(duelo.apuesta);
-                }else if(jugador.nombre == duelo.perdedor){
-                    jugador.puntuacion = parseInt(jugador.puntuacion) -  parseInt(duelo.apuesta);
+            //Mirar en los duelos
+            for (const duelo of duelos) {
+                if (duelo.ganador == jugador.nombre) {
+                    jugador.puntuacion = parseInt(jugador.puntuacion) + parseInt(duelo.apuesta);
+                } else if (jugador.nombre == duelo.perdedor) {
+                    jugador.puntuacion = parseInt(jugador.puntuacion) - parseInt(duelo.apuesta);
                 }
+            }
+
         }
-       
-    }}
+    }
 
 });
